@@ -16,6 +16,7 @@
             ]
         );
         
+        TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, "Configuration/Typoscript", "ImgCompromizer");
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
         $iconRegistry->registerIcon("imgcompromizer-icon", \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class, ['source' => 'EXT:imgcompromizer/Resources/Public/Icons/IMGCompromizer.svg']);
     }, $_EXTKEY);

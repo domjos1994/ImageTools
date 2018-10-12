@@ -2,10 +2,13 @@
 namespace DominicJoas\Imgcompromizer\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+
 use DominicJoas\Imgcompromizer\Domain\Repository\FileRepository;
 use DominicJoas\Imgcompromizer\Domain\Model\File;
 
 class FileController extends ActionController {
+    private $tinifyKey = '';
     private $fileRepository;
     protected $configurationManager;
 
@@ -13,6 +16,14 @@ class FileController extends ActionController {
         $this->fileRepository = $fileRepository;
     }
 
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
+        parent::injectConfigurationManager($configurationManager);
+        $this->configurationManager = $configurationManager;
+        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imgcompromizer_module1");
+
+        $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
+    }
+    
     public function listAction() {
         $uid = $this->configurationManager->getContentObject()->data['uid'];
         $files = $this->fileRepository->getContentElementEntries();
@@ -35,7 +46,7 @@ class FileController extends ActionController {
         
         $absoluteFile = $file->getOriginalResource()->getContents();
 
-        \Tinify\setKey();
+        \Tinify\setKey($this->tinifyKey);
         $source = \Tinify\fromBuffer($absoluteFile);
 
         $file->getOriginalResource()->setContents($source->toBuffer());
