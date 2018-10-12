@@ -35,7 +35,7 @@ class FileController extends ActionController {
         
         $absoluteFile = $file->getOriginalResource()->getContents();
 
-        \Tinify\setKey("zGyQL3uZYNNQFgx5rqugyaOkZmlbrOFI");
+        \Tinify\setKey();
         $source = \Tinify\fromBuffer($absoluteFile);
 
         $file->getOriginalResource()->setContents($source->toBuffer());
