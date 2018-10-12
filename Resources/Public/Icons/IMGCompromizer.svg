@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24px"
+   height="24px"
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="SVGRoot"
+   inkscape:version="0.92.1 r15371"
+   sodipodi:docname="Timeline.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="10.666667"
+     inkscape:cx="-6"
+     inkscape:cy="12"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:grid-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid71" />
+  </sodipodi:namedview>
+  <defs
+     id="defs18" />
+  <metadata
+     id="metadata21">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Ebene 2">
+    <g
+       id="layer1"
+       inkscape:groupmode="layer"
+       inkscape:label="Ebene 1"
+       style="display:inline">
+      <rect
+         id="rect34"
+         width="1.78125"
+         height="9"
+         x="1"
+         y="1"
+         style="stroke-width:0.82498306"
+         ry="0" />
+      <rect
+         id="rect36"
+         width="5"
+         height="2"
+         x="4"
+         y="1"
+         style="stroke-width:0.38580549" />
+      <rect
+         id="rect36-3"
+         width="5"
+         height="2"
+         x="4"
+         y="4"
+         style="stroke-width:0.38580549" />
+      <rect
+         id="rect36-6"
+         width="5"
+         height="2"
+         x="4"
+         y="7"
+         style="stroke-width:0.38580549" />
+      <rect
+         style="fill:#b3b3b3"
+         id="rect91"
+         width="10"
+         height="3"
+         x="1"
+         y="13" />
+      <rect
+         style="fill:#b3b3b3;stroke-width:0.81649661"
+         id="rect93"
+         width="2"
+         height="7"
+         x="5"
+         y="16" />
+      <rect
+         style="fill:#b3b3b3;stroke-width:1.22474492"
+         id="rect95"
+         width="10"
+         height="3"
+         x="10"
+         y="20" />
+      <rect
+         style="fill:#b3b3b3"
+         id="rect97"
+         width="3"
+         height="22"
+         x="20"
+         y="1" />
+    </g>
+  </g>
+</svg>
