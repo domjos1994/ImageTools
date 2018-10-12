@@ -1,5 +1,5 @@
 <f:be.container>
-
+    
     <div class="tx_imgcompromizer module-body t3js-module-body">
         <h2>Compress with Tinify</h2>
         <table border="1" class="table table-striped table-hover">
@@ -9,6 +9,7 @@
                     <th>Width</th>
                     <th>Height</th>
                     <th>Selection</th>
+                    <th>Progress</th>
                     <th>Compress</th>
                 </tr>
             </thead>
@@ -20,7 +21,7 @@
                             <td><f:form.textfield  property="txImgcompromizerWidth" value="-1"/></td>
                             <td><f:form.textfield  property="txImgcompromizerHeight"  value="-1"/></td>
                             <td><f:form.checkbox property="{txImgcompromizerCompressed}" value="0"/></td>
-                            <td><f:form.submit value="Compress">Compress</f:form.submit></td>
+                            <td><f:form.submit value="Compress" class="btn btn-primary">Compress</f:form.submit></td>
                         </f:form>
                     </tr>
                 </f:for>

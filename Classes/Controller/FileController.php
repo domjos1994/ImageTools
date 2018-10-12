@@ -48,7 +48,15 @@ class FileController extends ActionController {
 
         \Tinify\setKey($this->tinifyKey);
         $source = \Tinify\fromBuffer($absoluteFile);
-
+        
+        if($file->getTxImgcompromizerWidth()!=0) {
+            $source = $source->resize(array("method" => "scale","width" => $file->getTxImgcompromizerWidth()));
+        } else {
+            if($file->getTxImgcompromizerHeight()!=0) {
+                $source = $source->resize(array("method" => "scale","height" => $file->getTxImgcompromizerHeight()));
+            }
+        }
+        
         $file->getOriginalResource()->setContents($source->toBuffer());
         $file->setTxImgcompromizerCompressed(1);
         $this->fileRepository->save($file);
