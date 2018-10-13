@@ -9,7 +9,7 @@
             'web',
             'tx_imgcompromizer_module1',
             'bottom',
-            ['File' => 'list, edit, update, delete'],
+            ['File' => 'list, edit, update, undo'],
             [
                 'icon' => 'EXT:imgcompromizer/Resources/Public/Icons/IMGCompromizer.svg',
                 'labels' => 'LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf',

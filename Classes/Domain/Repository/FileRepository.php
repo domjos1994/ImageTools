@@ -17,6 +17,14 @@ class FileRepository extends Repository {
         return $result;
     }
     
+    public function getAllEntries() {
+        $query = $this->createQuery();
+        $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG');");
+        $result = $query->execute();
+        return $result;
+    }
+
+
     public function save($obj) {
         $this->update($obj);
     }

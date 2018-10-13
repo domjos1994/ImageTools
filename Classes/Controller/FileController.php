@@ -67,5 +67,18 @@ class FileController extends ActionController {
     public function updateAction() {
         
     }
+    
+    public function undoAction() {
+        $files = $this->fileRepository->getAllEntries();
+        
+        foreach($files as $file) {
+            $file->setTxImgcompromizerCompressed(0);
+            $file->setTxImgcompromizerWidth(-1);
+            $file->setTxImgcompromizerHeight(-1);
+            $this->fileRepository->save($file);
+        }
+        
+        $this->redirect("list");
+    }
 }
 
