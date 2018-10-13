@@ -9,6 +9,7 @@ use DominicJoas\Imgcompromizer\Domain\Model\File;
 
 class FileController extends ActionController {
     private $tinifyKey = '';
+    private $width, $height;
     private $fileRepository;
     protected $configurationManager;
 
@@ -22,6 +23,8 @@ class FileController extends ActionController {
         $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imgcompromizer_module1");
 
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
+        $this->width = $tsSettings['settings']['widthForAll'];
+        $this->height = $tsSettings['settings']['heightForAll'];
         
         $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("imgcompromizer");
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
@@ -38,6 +41,8 @@ class FileController extends ActionController {
         
         $this->view->assign('files', $files->toArray());
         $this->view->assign('uid', $uid);
+        $this->view->assign('width', $this->width);
+        $this->view->assign('height', $this->height);
         return $this->view->render();
     }
     

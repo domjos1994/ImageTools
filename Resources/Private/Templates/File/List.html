@@ -29,8 +29,8 @@
                     <tr>
                         <f:form name="file" object="{file}" action="edit">
                             <td><f:form.hidden property="{uid}" value="{file.uid}"/>{file.originalResource.identifier}</td>
-                            <td><f:form.textfield  property="txImgcompromizerWidth" value="-1" id="width{file.uid}"/></td>
-                            <td><f:form.textfield  property="txImgcompromizerHeight"  value="-1" id="height{file.uid}"/></td>
+                            <td><f:form.textfield  property="txImgcompromizerWidth" value="{width}" id="width{file.uid}"/></td>
+                            <td><f:form.textfield  property="txImgcompromizerHeight"  value="{height}" id="height{file.uid}"/></td>
                             <td class="center">
                                 <div class="checkbox checkbox-type-toggle">
                                     <f:form.checkbox property="{txImgcompromizerCompressed}" class="checkbox-input" id="chkUid{file.uid}" value="0"/>
