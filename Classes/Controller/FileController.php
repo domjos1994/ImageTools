@@ -22,6 +22,14 @@ class FileController extends ActionController {
         $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imgcompromizer_module1");
 
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
+        
+        $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("imgcompromizer");
+        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
+        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/ResultMeta.php');
+        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Result.php');
+        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Source.php');
+        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Client.php');
+        require_once($extPath . 'Resources/Private/PHP/lib/Tinify.php');
     }
     
     public function listAction() {
@@ -35,24 +43,16 @@ class FileController extends ActionController {
     
     public function editAction(File $file) {
         $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
-        $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("imgcompromizer");
-
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/ResultMeta.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Result.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Source.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Client.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify.php');
         
         $absoluteFile = $file->getOriginalResource()->getContents();
 
         \Tinify\setKey($this->tinifyKey);
         $source = \Tinify\fromBuffer($absoluteFile);
         
-        if($file->getTxImgcompromizerWidth()!=0) {
+        if($file->getTxImgcompromizerWidth()!=0 && $file->getTxImgcompromizerWidth()!=-1) {
             $source = $source->resize(array("method" => "scale","width" => $file->getTxImgcompromizerWidth()));
         } else {
-            if($file->getTxImgcompromizerHeight()!=0) {
+            if($file->getTxImgcompromizerHeight()!=0 && $file->getTxImgcompromizerHeight()!=-1) {
                 $source = $source->resize(array("method" => "scale","height" => $file->getTxImgcompromizerHeight()));
             }
         }
@@ -63,14 +63,9 @@ class FileController extends ActionController {
         
         $this->redirect("list");
     }
-
+    
     public function updateAction() {
         
     }
-
-    public function deleteAction() {
-        
-    }
-
 }
 
