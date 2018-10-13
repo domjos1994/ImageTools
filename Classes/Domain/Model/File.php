@@ -48,6 +48,10 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
     public function getTxImgcompromizerHeight() {
         return $this->txImgcompromizerHeight;
     }
-
+  
+    public function __toString() {
+        parent::__toString();
+        return $this->uid . ', ' . $this->txImgcompromizerCompressed;
+    }
 }
 

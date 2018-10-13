@@ -46,7 +46,7 @@ class FileController extends ActionController {
         return $this->view->render();
     }
     
-    public function editAction(File $file) {
+    public function updateAction(File $file) {
         $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
         
         $absoluteFile = $file->getOriginalResource()->getContents();
@@ -69,8 +69,27 @@ class FileController extends ActionController {
         $this->redirect("list");
     }
     
-    public function updateAction() {
+    public function updateAllAction() {
+        \Tinify\setKey($this->tinifyKey);
+        $files = $this->fileRepository->getContentElementEntries();
         
+        foreach($files as $file) {
+            $source = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
+
+            if($this->width!="0" && $this->width!="-1") {
+                $source = $source->resize(array("method" => "scale","width" => intval ($this->width)));
+            } else {
+                if($this->height!="0" && $this->height!="-1") {
+                    $source = $source->resize(array("method" => "scale","height" => intval ($this->height)));
+                }
+            }
+                
+            $file->getOriginalResource()->setContents($source->toBuffer());
+            $file->setTxImgcompromizerCompressed(1);
+            $this->fileRepository->save($file);
+        }
+        
+        $this->redirect("list");
     }
     
     public function undoAction() {
