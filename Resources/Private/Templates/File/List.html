@@ -2,6 +2,14 @@
     <div id="typo3-docheader">
         <div class="typo3-docheader-functions">
             <div class="left">
+                <div class="buttonsleft left">
+                    <f:be.buttons.csh />
+
+                    <f:be.menus.actionMenu>
+                        <f:be.menus.actionMenuItem label="Compress Images" controller="File" action="list" />
+                        <f:be.menus.actionMenuItem label="Optimize Structure" controller="Structure" action="list" />
+                    </f:be.menus.actionMenu>
+                </div>
                 <f:link.action action="undo" title="Get all images back to list!">
                     <core:icon identifier="actions-edit-undo" />
                 </f:link.action>
