@@ -26,37 +26,36 @@
                     <th>Title</th>
                     <th>Alternative</th>
                     <th>Description</th>
+                    <th>Ändern</th>
                 </tr>
             </thead>
-            <f:form controller="Structure" action="update" name="files" object="{files}" objectName="files">
-                <tbody>
-                    <f:for each="{files.fileArray}" as="file" iteration="objIterator">
+            <tbody>
+                <f:for each="{files}" as="file" iteration="objIterator">
+                    <f:form controller="Structure" action="update" name="file" object="{file}">
                         <tr>
-                            <f:if condition="{file.2}">
+                            <f:form.hidden property='identifier' value='{file.identifier}'/>
+                            <f:form.hidden property='uid' value='{file.uid}'/>
+                            <f:form.hidden property='parentUid' value='{file.parentUid}'/>
+                            <f:form.hidden property='parent' value='{file.parent}'/>
+                            <f:if condition="{file.parent}">
                                 <f:then>
-                                    <td><f:form.hidden property="{0}" value="{file.0}"/>{file.1}</td>
+                                    <td>{file.identifier}</td>
                                     <td></td>
                                 </f:then>
 
                                 <f:else>
-                                    <td><f:form.hidden property="{0}" value="{file.0}"/></td>
-                                    <td>{file.1}<</td>
+                                    <td></td>
+                                    <td>{file.identifier}</td>
                                 </f:else>
                             </f:if> 
-                            <td><f:form.textfield  property="{files.{objIterator.index}.3}" value="{file.3}"/></td>
-                            <td><f:form.textfield  property="{files.{objIterator.index}.4}" value="{file.4}"/></td>
-                            <td><f:form.textfield  property="{files.{objIterator.index}.5}" value="{file.5}"/></td>
+                            <td><f:form.textfield  property="title" value="{file.title}"/></td>
+                            <td><f:form.textfield  property="alternative" value="{file.alternative}"/></td>
+                            <td><f:form.textfield  property="description" value="{file.description}"/></td>
+                            <td><f:form.submit class="btn btn-primary col-md-12" value="Ändern"/></td>
                         </tr>
-                    </f:for>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="5">
-                            <f:form.submit class="btn btn-primary col-md-12" value="Ändern">Click here</f:form.submit>
-                        </td>
-                    </tr>
-                </tfoot>
-            </f:form>
+                    </f:form>
+                </f:for>
+            </tbody>
         </table>
     </div>
 </f:be.container>

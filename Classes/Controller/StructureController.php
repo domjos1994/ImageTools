@@ -5,7 +5,7 @@ namespace DominicJoas\Imgcompromizer\Controller;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
-use DominicJoas\Imgcompromizer\Domain\Model\FileArray;
+use DominicJoas\Imgcompromizer\Domain\Model\FileMeta;
 use DominicJoas\Imgcompromizer\Domain\Repository\FileRepository;
 
 class StructureController extends ActionController {
@@ -24,12 +24,17 @@ class StructureController extends ActionController {
 
     public function listAction() {
         $files = $this->fileRepository->getFilesAndReferences();
+        var_dump($files);
         $this->view->assign('files', $files);
         return $this->view->render();
     }
     
-    public function updateAction(FileArray $files) {
-        
+    /**
+     * 
+     * @param FileMeta $file
+     */
+    public function updateAction(FileMeta $file) {
+        var_dump($this->fileRepository->saveMeta($file));
         $this->redirect("list");
     }
 }
