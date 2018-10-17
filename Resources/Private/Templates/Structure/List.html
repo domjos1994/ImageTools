@@ -33,6 +33,7 @@
                 <f:for each="{files}" as="file" iteration="objIterator">
                     <f:form controller="Structure" action="update" name="file" object="{file}">
                         <tr>
+                            <f:debug>{file.parentData.1}</f:debug>
                             <f:form.hidden property='identifier' value='{file.identifier}'/>
                             <f:form.hidden property='uid' value='{file.uid}'/>
                             <f:form.hidden property='parentUid' value='{file.parentUid}'/>
@@ -48,9 +49,9 @@
                                     <td>{file.identifier}</td>
                                 </f:else>
                             </f:if> 
-                            <td><f:form.textfield  property="title" value="{file.title}"/></td>
-                            <td><f:form.textfield  property="alternative" value="{file.alternative}"/></td>
-                            <td><f:form.textfield  property="description" value="{file.description}"/></td>
+                            <td><f:form.textfield class="form-control {f:if(condition: '{file.title} == \"\"', then: 'error')}"  property="title" value="{file.title}" placeholder="{file.parentData.0}"/></td>
+                            <td><f:form.textfield class="form-control {f:if(condition: '{file.alternative} == \"\"', then: 'error')}" property="alternative" value="{file.alternative}" placeholder="{file.parentData.1}"/></td>
+                            <td><f:form.textfield class="form-control {f:if(condition: '{file.description} == \"\"', then: 'error')}" property="description" value="{file.description}" placeholder="{file.parentData.2}"/></td>
                             <td><f:form.submit class="btn btn-primary col-md-12" value="Ändern"/></td>
                         </tr>
                     </f:form>

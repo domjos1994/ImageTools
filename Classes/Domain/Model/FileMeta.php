@@ -51,6 +51,19 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
      * @var string
      */
     protected $description;
+    
+    /**
+     * ParentData of meta
+     *
+     * @var array
+     */
+    protected $parentData;
+    
+    public function __construct() {
+        $this->parentData[0] = "";
+        $this->parentData[1] = "";
+        $this->parentData[2] = "";
+    }
 
     /**
      * 
@@ -162,6 +175,22 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
      */
     public function setDescription($description) {
         $this->description = $description;
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getParentData() {
+        return $this->parentData;
+    }
+
+    /**
+     * 
+     * @param array $parentData
+     */
+    public function setParentData($parentData) {
+        $this->parentData = $parentData;
     }
 }
 

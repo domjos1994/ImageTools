@@ -24,7 +24,6 @@ class StructureController extends ActionController {
 
     public function listAction() {
         $files = $this->fileRepository->getFilesAndReferences();
-        var_dump($files);
         $this->view->assign('files', $files);
         return $this->view->render();
     }

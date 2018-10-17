@@ -79,9 +79,9 @@ class FileRepository extends Repository {
                 $fileMeta->setIdentifier($referencedFile->getOriginalResource()->getIdentifier());
                 $fileMeta->setParent(false);
                 
-                $fileMeta->setTitle($this->setParams($parentParams[0], "title", $repo, $referencedFile));
-                $fileMeta->setAlternative($this->setParams($parentParams[1], "alternative", $repo, $referencedFile));
-                $fileMeta->setDescription($this->setParams($parentParams[2], "description", $repo, $referencedFile));
+                $fileMeta->setTitle($this->setParams($parentParams[0], "title", $repo, $referencedFile, $fileMeta, 0));
+                $fileMeta->setAlternative($this->setParams($parentParams[1], "alternative", $repo, $referencedFile, $fileMeta, 1));
+                $fileMeta->setDescription($this->setParams($parentParams[2], "description", $repo, $referencedFile, $fileMeta, 2));
                 $tmp[$i] = $fileMeta;
                 $i++;
             } 
@@ -128,7 +128,7 @@ class FileRepository extends Repository {
         }
     }
 
-        private function setParentParam($file, $descr) {
+    private function setParentParam($file, $descr) {
         if($file->getOriginalResource()->_getMetaData()[$descr]!=null) {
             return $file->getOriginalResource()->_getMetaData()[$descr];
         } else {
@@ -136,13 +136,12 @@ class FileRepository extends Repository {
         }
     }
     
-    private function setParams($parent, $descr, $repo, $referencedFile) {
+    private function setParams($parent, $descr, $repo, $referencedFile, &$fileMeta, $index) {
         if ($repo->findFileReferenceByUid($referencedFile->getUid())->getProperties()[$descr] == "") {
-            if($parent==null) {
-                return "";
-            } else {
-                return $parent;
-            }
+            $tmp = $fileMeta->getParentData();
+            $tmp[$index] = $parent;
+            $fileMeta->setParentData($tmp);
+            return "";
         } else {
             return $repo->findFileReferenceByUid($referencedFile->getUid())->getProperties()[$descr];
         }
