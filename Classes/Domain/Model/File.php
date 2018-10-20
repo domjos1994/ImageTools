@@ -5,6 +5,13 @@ namespace DominicJoas\Imgcompromizer\Domain\Model;
 class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
 
     /**
+     * Uid of file
+     *
+     * @var integer
+     */
+    protected $uid;
+    
+    /**
      * The compressed-state for the image
      *
      * @var int
@@ -25,6 +32,14 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
      * */
     protected $txImgcompromizerHeight;
 
+    public function getUid() {
+        return $this->uid;
+    }
+
+    public function setUid($uid) {
+        $this->uid = $uid;
+    }
+    
     public function setTxImgcompromizerCompressed($txImgcompromizerCompressed) {
         $this->txImgcompromizerCompressed = $txImgcompromizerCompressed;
     }
@@ -47,11 +62,6 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
 
     public function getTxImgcompromizerHeight() {
         return $this->txImgcompromizerHeight;
-    }
-  
-    public function __toString() {
-        parent::__toString();
-        return $this->uid . ', ' . $this->txImgcompromizerCompressed;
     }
 }
 

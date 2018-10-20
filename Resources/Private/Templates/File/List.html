@@ -32,32 +32,19 @@
                 </tr>
             </thead>
             <tbody>
-
                 <f:for each="{files}" as="file" iteration="objIterator">
-                    <tr>
-                        <f:form name="file" object="{file}" action="update">
-                            <f:form.hidden property="{uid}" value="{file.uid}"/>
-                            <td id='img{file.uid}' class='image'><a onclick='toggleImage({file.uid})'>{file.originalResource.identifier}<f:image src='{file.originalResource.publicUrl}' width='250'/></a></td>
-                            <td><f:form.textfield  property="txImgcompromizerWidth" value="{width}" id="width{file.uid}"/></td>
-                            <td><f:form.textfield  property="txImgcompromizerHeight"  value="{height}" id="height{file.uid}"/></td>
-                            <td><f:form.submit value="Compress" onclick="toggleLoader({file.uid})" id="btn{file.uid}" class="btn btn-primary col-md-12">Compress</f:form.submit></td>
-                            <td class="center">
-                                <div id="loader{file.uid}"/>
-                            </td>
-                        </f:form>
-                    </tr>
+                    <f:form controller="File" action="update" name="file" object="{file}">
+                        <tr>
+                            <f:form.hidden property='uid' value='{file.uid}'/>
+                            <td><f:form.textfield class='form-control' property='originalResource.identifier' value='{file.originalResource.identifier}' disabled='true'/></td>
+                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txImgcompromizerWidth' value='{file.txImgcompromizerWidth}'/></td>
+                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txImgcompromizerHeight' value='{file.txImgcompromizerHeight}'/></td>
+                            <td><f:form.button id='btn{file.uid}' type='submit' onclick='toggleLoader({file.uid})'>Absenden</f:form.button></td>
+                            <td><div id="loader{file.uid}"></div></td>
+                        </tr>
+                    </f:form>
                 </f:for>
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">
-                        <f:link.action action="updateAll" id="btnAll" onclick="toggleLoaderAll()" class="btn btn-primary col-md-12">Compress All</f:link.action>   
-                    </td>
-                    <td>
-                        <div id="loaderAll"/>
-                    </td>
-                </tr>  
-            </tfoot>
         </table>
     </div>
     

@@ -48,11 +48,9 @@ class FileController extends ActionController {
             $this->addFlashMessage("No Tinify-Key was found in the configuration!", "No Key", Helper::getMessageType("error"), false);
         }
 
-        $uid = $this->configurationManager->getContentObject()->data['uid'];
-        $files = $this->fileRepository->getContentElementEntries();
+        $files = $this->fileRepository->getContentElementEntries()->toArray();
         
-        $this->view->assign('files', $files->toArray());
-        $this->view->assign('uid', $uid);
+        $this->view->assign('files', $files);
         $this->view->assign('width', $this->width);
         $this->view->assign('height', $this->height);
         return $this->view->render();
