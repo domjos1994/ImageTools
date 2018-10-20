@@ -11,7 +11,7 @@
                     </f:be.menus.actionMenu>
                 </div>
                 <f:link.action action="undo" title="Get all images back to list!">
-                    <core:icon identifier="actions-edit-undo" />
+                    <core:icon identifier="actions-edit-undo"><i class='fa fa-undo'></i></core:icon>
                 </f:link.action>
             </div>
         </div>
@@ -20,6 +20,7 @@
     
     <div class="tx_imgcompromizer module-body t3js-module-body">
         <h2>Compress with Tinify</h2>
+        <f:flashMessages />
         <table border="1" class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -31,10 +32,12 @@
                 </tr>
             </thead>
             <tbody>
+
                 <f:for each="{files}" as="file" iteration="objIterator">
                     <tr>
                         <f:form name="file" object="{file}" action="update">
-                            <td><f:form.hidden property="{uid}" value="{file.uid}"/>{file.originalResource.identifier}</td>
+                            <f:form.hidden property="{uid}" value="{file.uid}"/>
+                            <td id='img{file.uid}' class='image'><a onclick='toggleImage({file.uid})'>{file.originalResource.identifier}<f:image src='{file.originalResource.publicUrl}' width='250'/></a></td>
                             <td><f:form.textfield  property="txImgcompromizerWidth" value="{width}" id="width{file.uid}"/></td>
                             <td><f:form.textfield  property="txImgcompromizerHeight"  value="{height}" id="height{file.uid}"/></td>
                             <td><f:form.submit value="Compress" onclick="toggleLoader({file.uid})" id="btn{file.uid}" class="btn btn-primary col-md-12">Compress</f:form.submit></td>

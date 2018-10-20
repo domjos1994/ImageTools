@@ -7,6 +7,10 @@ function toggleLoader($identifier) {
     document.getElementById("chkUid" + $identifier).disabled = true;
 }
 
+function toggleImage($identifier) {
+    document.getElementById("img" + $identifier).classList.toggle("show");
+}
+
 function toggleLoaderAll() {
     document.getElementById("loaderAll").classList.toggle("loader");
 }

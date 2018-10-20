@@ -6,10 +6,12 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 use DominicJoas\Imgcompromizer\Domain\Repository\FileRepository;
 use DominicJoas\Imgcompromizer\Domain\Model\File;
+use DominicJoas\Imgcompromizer\Utility\Helper;
 
 class FileController extends ActionController {
     private $tinifyKey = '';
     private $width, $height;
+    private $overwrite, $sameFolder, $uploadPath;
     private $fileRepository;
     protected $configurationManager;
 
@@ -25,7 +27,10 @@ class FileController extends ActionController {
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
         $this->width = $tsSettings['settings']['widthForAll'];
         $this->height = $tsSettings['settings']['heightForAll'];
-        
+        $this->overwrite = $tsSettings['settings']['overwrite'];
+        $this->sameFolder = $tsSettings['settings']['sameFolder'];
+        $this->uploadPath = $tsSettings['settings']['uploadPath'];
+
         $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("imgcompromizer");
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/ResultMeta.php');
@@ -33,9 +38,16 @@ class FileController extends ActionController {
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Source.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Client.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify.php');
+        
+        
+        
     }
     
     public function listAction() {
+        if ($this->tinifyKey == NULL || $this->tinifyKey == "key") {
+            $this->addFlashMessage("No Tinify-Key was found in the configuration!", "No Key", Helper::getMessageType("error"), false);
+        }
+
         $uid = $this->configurationManager->getContentObject()->data['uid'];
         $files = $this->fileRepository->getContentElementEntries();
         
@@ -48,22 +60,15 @@ class FileController extends ActionController {
     
     public function updateAction(File $file) {
         $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
-        
-        $absoluteFile = $file->getOriginalResource()->getContents();
 
         \Tinify\setKey($this->tinifyKey);
-        $source = \Tinify\fromBuffer($absoluteFile);
-        
-        if($file->getTxImgcompromizerWidth()!=0 && $file->getTxImgcompromizerWidth()!=-1) {
-            $source = $source->resize(array("method" => "scale","width" => $file->getTxImgcompromizerWidth()));
-        } else {
-            if($file->getTxImgcompromizerHeight()!=0 && $file->getTxImgcompromizerHeight()!=-1) {
-                $source = $source->resize(array("method" => "scale","height" => $file->getTxImgcompromizerHeight()));
-            }
-        }
+        var_dump($file);
+        $source = $this->setSource($file->getTxImgcompromizerHeight(), $file->getTxImgcompromizerWidth(), \Tinify\fromBuffer($file->getOriginalResource()->getContents()));
         
         $file->getOriginalResource()->setContents($source->toBuffer());
         $file->setTxImgcompromizerCompressed(1);
+        var_dump(intval($this->sameFolder));
+        
         $this->fileRepository->save($file);
         
         $this->redirect("list");
@@ -74,15 +79,7 @@ class FileController extends ActionController {
         $files = $this->fileRepository->getContentElementEntries();
         
         foreach($files as $file) {
-            $source = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
-
-            if($this->width!="0" && $this->width!="-1") {
-                $source = $source->resize(array("method" => "scale","width" => intval ($this->width)));
-            } else {
-                if($this->height!="0" && $this->height!="-1") {
-                    $source = $source->resize(array("method" => "scale","height" => intval ($this->height)));
-                }
-            }
+            $source = $this->setSource($this->height, $this->width, \Tinify\fromBuffer($file->getOriginalResource()->getContents()));
                 
             $file->getOriginalResource()->setContents($source->toBuffer());
             $file->setTxImgcompromizerCompressed(1);
@@ -103,6 +100,17 @@ class FileController extends ActionController {
         }
         
         $this->redirect("list");
+    }
+    
+    private function setSource($height, $width, $source) {
+        if ($width != "0" && $width != "-1") {
+            return $source->resize(array("method" => "scale", "width" => intval($width)));
+        } else {
+            if ($height != "0" && $height != "-1") {
+                return $source->resize(array("method" => "scale", "height" => intval($height)));
+            }
+        }
+        return $source;
     }
 }
 

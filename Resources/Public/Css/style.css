@@ -5,6 +5,18 @@ td.center .loader {
     margin-right: auto;
 }
 
+td.image img {
+   display: none;
+   visibility: hidden;
+}
+
+td.image.show img {
+    display: block;
+    visibility: visible;
+    max-width: 10em;
+    height: auto;
+}
+
 .loader {
     border: 0.3em solid #f3f3f3; /* Light grey */
     border-top: 0.3em solid #3498db; /* Blue */

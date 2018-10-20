@@ -2,11 +2,11 @@
 
 namespace DominicJoas\Imgcompromizer\Domain\Repository;
 
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use DominicJoas\Imgcompromizer\Domain\Model\FileMeta;
+
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
 class FileRepository extends Repository {
 
@@ -78,7 +78,7 @@ class FileRepository extends Repository {
                 $fileMeta->setParentUid($file->getUid());
                 $fileMeta->setIdentifier($referencedFile->getOriginalResource()->getIdentifier());
                 $fileMeta->setParent(false);
-                
+
                 $fileMeta->setTitle($this->setParams($parentParams[0], "title", $repo, $referencedFile, $fileMeta, 0));
                 $fileMeta->setAlternative($this->setParams($parentParams[1], "alternative", $repo, $referencedFile, $fileMeta, 1));
                 $fileMeta->setDescription($this->setParams($parentParams[2], "description", $repo, $referencedFile, $fileMeta, 2));
@@ -137,13 +137,14 @@ class FileRepository extends Repository {
     }
     
     private function setParams($parent, $descr, $repo, $referencedFile, &$fileMeta, $index) {
-        if ($repo->findFileReferenceByUid($referencedFile->getUid())->getProperties()[$descr] == "") {
+        $properties = $repo->findFileReferenceByUid($referencedFile->getUid())->getProperties();
+        if ($properties[$descr] == "") {
             $tmp = $fileMeta->getParentData();
             $tmp[$index] = $parent;
             $fileMeta->setParentData($tmp);
             return "";
         } else {
-            return $repo->findFileReferenceByUid($referencedFile->getUid())->getProperties()[$descr];
+            return $properties[$descr];
         }
     }
 }

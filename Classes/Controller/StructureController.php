@@ -7,6 +7,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 use DominicJoas\Imgcompromizer\Domain\Model\FileMeta;
 use DominicJoas\Imgcompromizer\Domain\Repository\FileRepository;
+use DominicJoas\Imgcompromizer\Utility\Helper;
 
 class StructureController extends ActionController {
     private $fileRepository;
@@ -33,7 +34,8 @@ class StructureController extends ActionController {
      * @param FileMeta $file
      */
     public function updateAction(FileMeta $file) {
-        var_dump($this->fileRepository->saveMeta($file));
+        $this->fileRepository->saveMeta($file);
+        $this->addFlashMessage("Data saved successfully!", "Success", Helper::getMessageType("ok"), false);
         $this->redirect("list");
     }
 }
