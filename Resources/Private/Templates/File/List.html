@@ -30,14 +30,14 @@
                 </tr>
             </thead>
             <tbody>
-                <f:for each="{files}" as="file" iteration="objIterator">
+                <f:for each="{files.files}" as="file" iteration="objIterator">
                     <f:form controller="File" action="update" name="file" object="{file}">
                         <tr>
                             <f:form.hidden property='uid' value='{file.uid}'/>
                             <td><f:form.textfield class='form-control' property='originalResource.identifier' value='{file.originalResource.identifier}' disabled='true'/></td>
-                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txImgcompromizerWidth' value='{f:if(condition: "{file.txImgcompromizerWidth}==-1", then: "{width}", else: "{file.txImgcompromizerWidth}")}'/></td>
-                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txImgcompromizerHeight' value='{f:if(condition: "{file.txImgcompromizerHeight}==-1", then: "{height}", else: "{file.txImgcompromizerHeight}")}'/></td>
-                            <td><f:form.button id='btn{file.uid}' type='submit' onclick='toggleLoader({file.uid})'>Absenden</f:form.button></td>
+                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txImgcompromizerWidth' value='{f:if(condition: "{file.txImgcompromizerWidth}!=-1", then:"{file.txImgcompromizerWidth}", else: "")}' placeholder="{width}"/></td>
+                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txImgcompromizerHeight' value='{f:if(condition: "{file.txImgcompromizerHeight}!=-1", then:"{file.txImgcompromizerHeight}", else: "")}' placeholder="{height}"/></td>
+                            <td><f:form.button class="btn btn-primary col-md-12" type='submit' onclick='toggleLoader({file.uid})'>Absenden</f:form.button></td>
                             <td><div id="loader{file.uid}"></div></td>
                         </tr>
                     </f:form>
