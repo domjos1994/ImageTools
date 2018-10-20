@@ -16,8 +16,6 @@
             </div>
         </div>
     </div>
-    
-    
     <div class="tx_imgcompromizer module-body t3js-module-body">
         <h2>Compress with Tinify</h2>
         <f:flashMessages />
@@ -37,8 +35,8 @@
                         <tr>
                             <f:form.hidden property='uid' value='{file.uid}'/>
                             <td><f:form.textfield class='form-control' property='originalResource.identifier' value='{file.originalResource.identifier}' disabled='true'/></td>
-                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txImgcompromizerWidth' value='{file.txImgcompromizerWidth}'/></td>
-                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txImgcompromizerHeight' value='{file.txImgcompromizerHeight}'/></td>
+                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txImgcompromizerWidth' value='{f:if(condition: "{file.txImgcompromizerWidth}==-1", then: "{width}", else: "{file.txImgcompromizerWidth}")}'/></td>
+                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txImgcompromizerHeight' value='{f:if(condition: "{file.txImgcompromizerHeight}==-1", then: "{height}", else: "{file.txImgcompromizerHeight}")}'/></td>
                             <td><f:form.button id='btn{file.uid}' type='submit' onclick='toggleLoader({file.uid})'>Absenden</f:form.button></td>
                             <td><div id="loader{file.uid}"></div></td>
                         </tr>
@@ -47,5 +45,4 @@
             </tbody>
         </table>
     </div>
-    
 </f:be.container>
