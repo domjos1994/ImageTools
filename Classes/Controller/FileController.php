@@ -12,7 +12,7 @@ use DominicJoas\DjImagetools\Utility\Helper;
 class FileController extends ActionController {
     private $tinifyKey = '';
     private $width, $height;
-    private $overwrite, $sameFolder, $uploadPath;
+    //private $overwrite, $sameFolder, $uploadPath;
     private $fileRepository;
     protected $configurationManager;
 
@@ -28,9 +28,9 @@ class FileController extends ActionController {
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
         $this->width = $tsSettings['settings']['widthForAll'];
         $this->height = $tsSettings['settings']['heightForAll'];
-        $this->overwrite = $tsSettings['settings']['overwrite'];
-        $this->sameFolder = $tsSettings['settings']['sameFolder'];
-        $this->uploadPath = $tsSettings['settings']['uploadPath'];
+        //$this->overwrite = $tsSettings['settings']['overwrite'];
+        //$this->sameFolder = $tsSettings['settings']['sameFolder'];
+        //$this->uploadPath = $tsSettings['settings']['uploadPath'];
 
         $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("dj_imagetools");
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
@@ -119,7 +119,7 @@ class FileController extends ActionController {
             $this->fileRepository->save($file);
         }
         
-        //$this->redirect("list");
+        $this->redirect("list");
     }
     
     private function setSource($height, $width, $source) {
@@ -134,11 +134,11 @@ class FileController extends ActionController {
     }
     
     private function changeFile($file) {
-        if(intval($this->overwrite)==0) {
+        /*if(intval($this->overwrite)==0) {
             $content = $file->getOriginalResource()->getIdentifier();
             $file->getOriginalResource()->setIdentifier("tinified_" . $content);
             
-        }
+        }*/
         return $file->getOriginalResource()->getIdentifier();
     }
 }
