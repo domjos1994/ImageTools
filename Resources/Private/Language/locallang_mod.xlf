@@ -2,9 +2,12 @@
 <xliff version="1.0">
     <file source-language="en" datatype="plaintext" original="messages" date="2017-11-27T17:38:32Z" product-name="dj_imagetools">
         <header/>
-        <body>
+        <body>  
             <trans-unit id="mlang_tabs_tab" xml:space="preserve">
-                <source>Compress Images</source>
+                <source>Image-Tools</source>
+            </trans-unit>
+            <trans-unit id="mlang_tabs_tab.compressImages" xml:space="preserve">
+                <source>Compress images</source>
             </trans-unit>
             <trans-unit id="mlang_tabs_tab.metaData" xml:space="preserve">
                 <source>Meta-Data</source>
@@ -14,7 +17,7 @@
                 <source>Compress with Tinify</source>
             </trans-unit>
             <trans-unit id="compressImages.undo" xml:space="preserve">
-                <source>Compress with Tinify</source>
+                <source>Show Images again</source>
             </trans-unit>
             <trans-unit id="compressImages.file-name" xml:space="preserve">
                 <source>File-Name</source>

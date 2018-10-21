@@ -9,7 +9,7 @@
     
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\DominicJoas\ImageTools\Task\CompressTask::class] = [
         'extension' => 'dj_imagetools',
-        'title' => 'Compress images',
+        'title' => 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:imageTools',
         'description' => 'Compress all images which aren\'t compressed!',
         'additionalFields' => '',
     ];
