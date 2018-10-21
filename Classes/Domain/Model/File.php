@@ -1,5 +1,5 @@
 <?php
-namespace DominicJoas\Imgcompromizer\Domain\Model;
+namespace DominicJoas\DjImagetools\Domain\Model;
 
 
 class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
@@ -16,21 +16,21 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
      *
      * @var int
      * */
-    protected $txImgcompromizerCompressed;
+    protected $txDjImagetoolsCompressed;
 
     /**
      * The width of the image
      *
      * @var int
      * */
-    protected $txImgcompromizerWidth;
+    protected $txDjImagetoolsWidth;
 
     /**
      * The height of the image
      *
      * @var int
      * */
-    protected $txImgcompromizerHeight;
+    protected $txDjImagetoolsHeight;
 
     public function getUid() {
         return $this->uid;
@@ -40,28 +40,28 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
         $this->uid = $uid;
     }
     
-    public function setTxImgcompromizerCompressed($txImgcompromizerCompressed) {
-        $this->txImgcompromizerCompressed = $txImgcompromizerCompressed;
+    public function setTxDjImagetoolsCompressed($txDjImagetoolsCompressed) {
+        $this->txDjImagetoolsCompressed = $txDjImagetoolsCompressed;
     }
 
-    public function getTxImgcompromizerCompressed() {
-        return $this->txImgcompromizerCompressed;
+    public function getTxDjImagetoolsCompressed() {
+        return $this->txDjImagetoolsCompressed;
     }
 
-    public function setTxImgcompromizerWidth($txImgcompromizerWidth) {
-        $this->txImgcompromizerWidth = $txImgcompromizerWidth;
+    public function setTxDjImagetoolsWidth($txDjImagetoolsWidth) {
+        $this->txDjImagetoolsWidth = $txDjImagetoolsWidth;
     }
 
-    public function getTxImgcompromizerWidth() {
-        return $this->txImgcompromizerWidth;
+    public function getTxDjImagetoolsWidth() {
+        return $this->txDjImagetoolsWidth;
     }
 
-    public function setTxImgcompromizerHeight($txImgcompromizerHeight) {
-        $this->txImgcompromizerHeight = $txImgcompromizerHeight;
+    public function setTxDjImagetoolsHeight($txDjImagetoolsHeight) {
+        $this->txDjImagetoolsHeight = $txDjImagetoolsHeight;
     }
 
-    public function getTxImgcompromizerHeight() {
-        return $this->txImgcompromizerHeight;
+    public function getTxDjImagetoolsHeight() {
+        return $this->txDjImagetoolsHeight;
     }
 }
 

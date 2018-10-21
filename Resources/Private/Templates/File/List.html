@@ -6,27 +6,27 @@
                     <f:be.buttons.csh />
 
                     <f:be.menus.actionMenu>
-                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab')}" controller="File" action="list" />
-                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.metaData')}" controller="Structure" action="list" />
+                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab')}" controller="File" action="list" />
+                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.metaData')}" controller="Structure" action="list" />
                     </f:be.menus.actionMenu>
                 </div>
-                <f:link.action action="undo" title="{f:translate(key: 'LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.undo')}">
+                <f:link.action action="undo" title="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.undo')}">
                     <core:icon identifier="actions-edit-undo"><i class='fa fa-undo'></i></core:icon>
                 </f:link.action>
             </div>
         </div>
     </div>
-    <div class="tx_imgcompromizer module-body t3js-module-body">
-        <h2><f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages"/></h2>
+    <div class="tx_dj_imagetools module-body t3js-module-body">
+        <h2><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages"/></h2>
         <f:flashMessages />
         <table border="1" class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th><f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.file-name"/></th>
-                    <th><f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.width"/></th>
-                    <th><f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.height"/></th>
-                    <th><f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.compressed"/></th>
-                    <th><f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.progress"/></th>
+                    <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.file-name"/></th>
+                    <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.width"/></th>
+                    <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.height"/></th>
+                    <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.compressed"/></th>
+                    <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.progress"/></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,11 +35,11 @@
                         <tr>
                             <f:form.hidden property='uid' value='{file.uid}'/>
                             <td><f:form.textfield class='form-control' property='originalResource.identifier' value='{file.originalResource.identifier}' disabled='true'/></td>
-                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txImgcompromizerWidth' value='{f:if(condition: "{file.txImgcompromizerWidth}!=-1", then:"{file.txImgcompromizerWidth}", else: "")}' placeholder="{width}"/></td>
-                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txImgcompromizerHeight' value='{f:if(condition: "{file.txImgcompromizerHeight}!=-1", then:"{file.txImgcompromizerHeight}", else: "")}' placeholder="{height}"/></td>
+                            <td><f:form.textfield id='width{file.uid}' class='form-control' property='txDjImagetoolsWidth' value='{f:if(condition: "{file.txDjImagetoolsWidth}!=-1", then:"{file.txDjImagetoolsWidth}", else: "")}' placeholder="{width}"/></td>
+                            <td><f:form.textfield id='height{file.uid}' class='form-control' property='txDjImagetoolsHeight' value='{f:if(condition: "{file.txDjImagetoolsHeight}!=-1", then:"{file.txDjImagetoolsHeight}", else: "")}' placeholder="{height}"/></td>
                             <td>
                                 <f:form.button class="btn btn-primary col-md-12" type='submit' onclick='toggleLoader({file.uid})'>
-                                    <i class='fa fa-compress'></i> <f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.compressed"/>
+                                    <i class='fa fa-compress'></i> <f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.compressed"/>
                                 </f:form.button>
                             </td>
                             <td>
@@ -53,7 +53,7 @@
                 <tr>
                     <td colspan="4">
                         <f:link.action action="updateAll" class="btn btn-primary col-md-12" onclick="toggleLoaderAll()">
-                            <i class='fa fa-compress'></i> <f:translate key="LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf:compressImages.compressAll"/>
+                            <i class='fa fa-compress'></i> <f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.compressAll"/>
                         </f:link.action>
                     </td>
                     <td>

@@ -1,12 +1,12 @@
 config.tx_extbase {
     objects {
         TYPO3\CMS\Extbase\Domain\Model\File {
-            className = DominicJoas\Imgcompromizer\Domain\Model\File
+            className = DominicJoas\DjImagetools\Domain\Model\File
         }
     }
     persistence {
         classes {
-             DominicJoas\Imgcompromizer\Domain\Model\File {
+             DominicJoas\DjImagetools\Domain\Model\File {
                 mapping {
                     tableName = sys_file
                 }

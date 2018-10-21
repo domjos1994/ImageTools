@@ -1,2 +1,2 @@
-# IMGCompromizer
-An extension to compress and cut images with tinyfy!
+# ImageTools
+An extension to compress, resize and update Meta-Data of images!

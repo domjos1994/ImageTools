@@ -1,13 +1,13 @@
 <?php
 
-namespace DominicJoas\Imgcompromizer\Controller;
+namespace DominicJoas\DjImagetools\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
-use DominicJoas\Imgcompromizer\Domain\Model\FileMeta;
-use DominicJoas\Imgcompromizer\Domain\Repository\FileRepository;
-use DominicJoas\Imgcompromizer\Utility\Helper;
+use DominicJoas\DjImagetools\Domain\Model\FileMeta;
+use DominicJoas\DjImagetools\Domain\Repository\FileRepository;
+use DominicJoas\DjImagetools\Utility\Helper;
 
 class StructureController extends ActionController {
     private $fileRepository;
@@ -20,7 +20,7 @@ class StructureController extends ActionController {
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
         parent::injectConfigurationManager($configurationManager);
         $this->configurationManager = $configurationManager;
-        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imgcompromizer_module1");
+        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1");
     }
 
     public function listAction() {

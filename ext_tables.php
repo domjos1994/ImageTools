@@ -7,16 +7,16 @@
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             'DominicJoas.' . $extKey,
             'web',
-            'tx_imgcompromizer_module1',
+            'tx_imagetools_module1',
             'bottom',
             ['File' => 'list, update, updateAll, undo', 'Structure' => 'list, update'],
             [
-                'icon' => 'EXT:imgcompromizer/Resources/Public/Icons/IMGCompromizer.svg',
-                'labels' => 'LLL:EXT:imgcompromizer/Resources/Private/Language/locallang_mod.xlf',
+                'icon' => 'EXT:dj_imagetools/Resources/Public/Icons/ImageTools.svg',
+                'labels' => 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf',
             ]
         );
         
-        TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, "Configuration/Typoscript", "ImgCompromizer");
+        TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, "Configuration/Typoscript", "ImageTools");
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-        $iconRegistry->registerIcon("imgcompromizer-icon", \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class, ['source' => 'EXT:imgcompromizer/Resources/Public/Icons/IMGCompromizer.svg']);
+        $iconRegistry->registerIcon("imagetools-icon", \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class, ['source' => 'EXT:dj_imagetools/Resources/Public/Icons/ImageTools.svg']);
     }, $_EXTKEY);

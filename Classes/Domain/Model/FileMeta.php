@@ -1,5 +1,5 @@
 <?php
-namespace DominicJoas\Imgcompromizer\Domain\Model;
+namespace DominicJoas\DjImagetools\Domain\Model;
 
 class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
 

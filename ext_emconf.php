@@ -1,8 +1,8 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = array (
-    'title' => 'IMGCompromizer',
-    'description' => 'An extension to compress and cut images with tinyfy!',
+    'title' => 'ImageTools',
+    'description' => 'An extension to compress, resize and update Meta-Data of images!',
     'category' => 'plugin',
     'author' => 'Dominic Joas',
     'author_company' => '',
@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = array (
         'suggests' => array (),
     ),
     'autoload' => array (
-        'psr-4' => array ('DominicJoas\\Imgcompromizer\\' => 'Classes',),
+        'psr-4' => array ('DominicJoas\\DjImagetools\\' => 'Classes',),
     ),
     'uploadfolder' => true,
     'createDirs' => NULL,

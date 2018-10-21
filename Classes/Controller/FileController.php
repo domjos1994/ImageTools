@@ -1,13 +1,13 @@
 <?php
-namespace DominicJoas\Imgcompromizer\Controller;
+namespace DominicJoas\DjImagetools\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
-use DominicJoas\Imgcompromizer\Domain\Repository\FileRepository;
-use DominicJoas\Imgcompromizer\Domain\Model\File;
-use DominicJoas\Imgcompromizer\Domain\Model\Files;
-use DominicJoas\Imgcompromizer\Utility\Helper;
+use DominicJoas\DjImagetools\Domain\Repository\FileRepository;
+use DominicJoas\DjImagetools\Domain\Model\File;
+use DominicJoas\DjImagetools\Domain\Model\Files;
+use DominicJoas\DjImagetools\Utility\Helper;
 
 class FileController extends ActionController {
     private $tinifyKey = '';
@@ -23,7 +23,7 @@ class FileController extends ActionController {
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
         parent::injectConfigurationManager($configurationManager);
         $this->configurationManager = $configurationManager;
-        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imgcompromizer_module1");
+        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1");
 
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
         $this->width = $tsSettings['settings']['widthForAll'];
@@ -32,7 +32,7 @@ class FileController extends ActionController {
         $this->sameFolder = $tsSettings['settings']['sameFolder'];
         $this->uploadPath = $tsSettings['settings']['uploadPath'];
 
-        $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("imgcompromizer");
+        $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("dj_imagetools");
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/ResultMeta.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Result.php');
@@ -58,21 +58,24 @@ class FileController extends ActionController {
     }
     
     public function updateAction(File $file) {
-        if($file->getTxImgcompromizerWidth()==NULL && $file->getTxImgcompromizerHeight()==NULL) {
+        if($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) {
             if($this->width==NULL || $this->width==-1) {
-                $file->setTxImgcompromizerHeight(intval($this->height));
+                $file->setTxDjImagetoolsHeight(intval($this->height));
             } else {
-                $file->setTxImgcompromizerWidth(intval($this->width));
+                $file->setTxDjImagetoolsWidth(intval($this->width));
             }
         }
         
-        $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
+        $height = $file->getTxDjImagetoolsHeight();
+        $width = $file->getTxDjImagetoolsWidth();
+        $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
         
+        $tmp = $this->fileRepository->getContentElementEntries($file->getUid())->toArray();
+        $file->setOriginalResource($tmp[0]->getOriginalResource());
         
-        $source = $this->setSource($file->getTxImgcompromizerHeight(), $file->getTxImgcompromizerWidth(), \Tinify\fromBuffer($file->getOriginalResource()->getContents()));
-        
+        $source = $this->setSource($height, $width, $tinifySource);
         $file->getOriginalResource()->setContents($source->toBuffer());
-        $file->setTxImgcompromizerCompressed(1);
+        $file->setTxDjImagetoolsCompressed(1);
         
         $this->fileRepository->save($file);
        
@@ -84,18 +87,21 @@ class FileController extends ActionController {
         
         foreach($files as $file) {
             if($this->width==NULL || $this->width==-1) {
-                $file->setTxImgcompromizerHeight(intval($this->height));
+                $file->setTxDjImagetoolsHeight(intval($this->height));
             } else {
-                $file->setTxImgcompromizerWidth(intval($this->width));
+                $file->setTxDjImagetoolsWidth(intval($this->width));
             }
             
-            $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
-        
-        
-            $source = $this->setSource($file->getTxImgcompromizerHeight(), $file->getTxImgcompromizerWidth(), \Tinify\fromBuffer($file->getOriginalResource()->getContents()));
+            $height = $file->getTxDjImagetoolsHeight();
+            $width = $file->getTxDjImagetoolsWidth();
+            $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
 
+            $tmp = $this->fileRepository->getContentElementEntries($file->getUid())->toArray();
+            $file->setOriginalResource($tmp[0]->getOriginalResource());
+
+            $source = $this->setSource($height, $width, $tinifySource);
             $file->getOriginalResource()->setContents($source->toBuffer());
-            $file->setTxImgcompromizerCompressed(1);
+            $file->setTxDjImagetoolsCompressed(1);
 
             $this->fileRepository->save($file);
         }
@@ -104,15 +110,16 @@ class FileController extends ActionController {
 
     public function undoAction() {
         $files = $this->fileRepository->getAllEntries();
-        
+
         foreach($files as $file) {
-            $file->setTxImgcompromizerCompressed(0);
-            $file->setTxImgcompromizerWidth(-1);
-            $file->setTxImgcompromizerHeight(-1);
+            
+            $file->setTxDjImagetoolsCompressed(0);
+            $file->setTxDjImagetoolsWidth(-1);
+            $file->setTxDjImagetoolsHeight(-1);
             $this->fileRepository->save($file);
         }
         
-        $this->redirect("list");
+        //$this->redirect("list");
     }
     
     private function setSource($height, $width, $source) {

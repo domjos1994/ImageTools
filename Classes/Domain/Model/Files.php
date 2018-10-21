@@ -1,5 +1,5 @@
 <?php
-namespace DominicJoas\Imgcompromizer\Domain\Model;
+namespace DominicJoas\DjImagetools\Domain\Model;
 
 class Files implements \TYPO3\CMS\Core\SingletonInterface {
     /**

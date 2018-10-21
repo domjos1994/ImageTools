@@ -1,5 +1,5 @@
 <?php
-namespace DominicJoas\Imgcompromizer\Utility;
+namespace DominicJoas\DjImagetools\Utility;
 
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 
