@@ -6,14 +6,55 @@
             <trans-unit id="mlang_tabs_tab" xml:space="preserve">
                 <source>Compress Images</source>
             </trans-unit>
-            <trans-unit id="compressed" xml:space="preserve">
-                <source>Compressed</source>
+            <trans-unit id="mlang_tabs_tab.metaData" xml:space="preserve">
+                <source>Meta-Data</source>
             </trans-unit>
-            <trans-unit id="width" xml:space="preserve">
+            
+            <trans-unit id="compressImages" xml:space="preserve">
+                <source>Compress with Tinify</source>
+            </trans-unit>
+            <trans-unit id="compressImages.undo" xml:space="preserve">
+                <source>Compress with Tinify</source>
+            </trans-unit>
+            <trans-unit id="compressImages.file-name" xml:space="preserve">
+                <source>File-Name</source>
+            </trans-unit>
+            <trans-unit id="compressImages.compressed" xml:space="preserve">
+                <source>Compress</source>
+            </trans-unit>
+            <trans-unit id="compressImages.width" xml:space="preserve">
                 <source>Width</source>
             </trans-unit>
-            <trans-unit id="height" xml:space="preserve">
+            <trans-unit id="compressImages.height" xml:space="preserve">
                 <source>Height</source>
+            </trans-unit>
+            <trans-unit id="compressImages.progress" xml:space="preserve">
+                <source>Progress</source>
+            </trans-unit>
+            <trans-unit id="compressImages.compressAll" xml:space="preserve">
+                <source>Compress all</source>
+            </trans-unit>
+            
+            <trans-unit id="metaData" xml:space="preserve">
+                <source>Optimize the Meta-Data of images</source>
+            </trans-unit>
+            <trans-unit id="metaData.parent" xml:space="preserve">
+                <source>Parent</source>
+            </trans-unit>
+            <trans-unit id="metaData.reference" xml:space="preserve">
+                <source>Reference</source>
+            </trans-unit>
+            <trans-unit id="metaData.title" xml:space="preserve">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="metaData.alternative" xml:space="preserve">
+                <source>Alternative</source>
+            </trans-unit>
+            <trans-unit id="metaData.description" xml:space="preserve">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="metaData.change" xml:space="preserve">
+                <source>Change</source>
             </trans-unit>
         </body>
     </file>

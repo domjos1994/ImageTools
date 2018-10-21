@@ -39,9 +39,7 @@ class FileController extends ActionController {
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Source.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Client.php');
         require_once($extPath . 'Resources/Private/PHP/lib/Tinify.php');
-        
-        
-        
+        \Tinify\setKey($this->tinifyKey);
     }
     
     public function listAction() {
@@ -70,7 +68,7 @@ class FileController extends ActionController {
         
         $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
         
-        \Tinify\setKey($this->tinifyKey);
+        
         $source = $this->setSource($file->getTxImgcompromizerHeight(), $file->getTxImgcompromizerWidth(), \Tinify\fromBuffer($file->getOriginalResource()->getContents()));
         
         $file->getOriginalResource()->setContents($source->toBuffer());
@@ -81,6 +79,29 @@ class FileController extends ActionController {
         $this->redirect("list");
     }
     
+    public function updateAllAction() {
+        $files = $this->fileRepository->getContentElementEntries()->toArray();
+        
+        foreach($files as $file) {
+            if($this->width==NULL || $this->width==-1) {
+                $file->setTxImgcompromizerHeight(intval($this->height));
+            } else {
+                $file->setTxImgcompromizerWidth(intval($this->width));
+            }
+            
+            $file->setOriginalResource($this->fileRepository->getContentElementEntries($file->getUid())->toArray()[0]->getOriginalResource());
+        
+        
+            $source = $this->setSource($file->getTxImgcompromizerHeight(), $file->getTxImgcompromizerWidth(), \Tinify\fromBuffer($file->getOriginalResource()->getContents()));
+
+            $file->getOriginalResource()->setContents($source->toBuffer());
+            $file->setTxImgcompromizerCompressed(1);
+
+            $this->fileRepository->save($file);
+        }
+        $this->redirect("list");
+    }
+
     public function undoAction() {
         $files = $this->fileRepository->getAllEntries();
         
@@ -95,9 +116,6 @@ class FileController extends ActionController {
     }
     
     private function setSource($height, $width, $source) {
-        var_dump($width);
-        var_dump($height);
-        
         if ($width != NULL && $width != "0" && $width != "-1") {
             return $source->resize(array("method" => "scale", "width" => intval($width)));
         } else {
