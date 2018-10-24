@@ -33,7 +33,7 @@
                 </thead>
                 <tbody>
                     <f:for each="{files}" as="file" iteration="objIterator">
-                        <f:form controller="Structure" action="update" name="file" object="{file}">
+                        <f:form controller="Meta" action="update" name="file" object="{file}">
                             <tr>
                                 <f:form.hidden property='identifier' value='{file.identifier}'/>
                                 <f:form.hidden property='uid' value='{file.uid}'/>

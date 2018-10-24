@@ -3,6 +3,7 @@
 namespace DominicJoas\DjImagetools\Domain\Repository;
 
 use DominicJoas\DjImagetools\Domain\Model\FileMeta;
+use DominicJoas\DjImagetools\Utility\Helper;
 
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,43 +50,13 @@ class FileRepository extends Repository {
         return $result;
     }
     
-    public function getFilesAndReferences() {
+    public function getFilesAndReferences($request) {
         $tmp = array();
         
         $files = $this->getAllEntries()->toArray();
         $i = 0;
-        foreach($files as $file) {
-            $fileMeta = new FileMeta();
-            $fileMeta->setUid($file->getUid());
-            $fileMeta->setIdentifier($file->getOriginalResource()->getIdentifier());
-            $fileMeta->setParent(true);
-            
-            $parentParams = array();
-            $parentParams[0] = $this->setParentParam($file, "title");
-            $parentParams[1] = $this->setParentParam($file, "alternative");
-            $parentParams[2] = $this->setParentParam($file, "description");
-            
-            $fileMeta->setTitle($parentParams[0]);
-            $fileMeta->setAlternative($parentParams[1]);
-            $fileMeta->setDescription($parentParams[2]);
-            $tmp[$i] = $fileMeta;
-            $i++;
-
-            foreach($this->getFileReferences($file->getUid())->toArray() as $referencedFile) {
-                $fileMeta = new FileMeta();
-
-                $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
-                $fileMeta->setUid($referencedFile->getUid());
-                $fileMeta->setParentUid($file->getUid());
-                $fileMeta->setIdentifier($referencedFile->getOriginalResource()->getIdentifier());
-                $fileMeta->setParent(false);
-
-                $fileMeta->setTitle($this->setParams($parentParams[0], "title", $repo, $referencedFile, $fileMeta, 0));
-                $fileMeta->setAlternative($this->setParams($parentParams[1], "alternative", $repo, $referencedFile, $fileMeta, 1));
-                $fileMeta->setDescription($this->setParams($parentParams[2], "description", $repo, $referencedFile, $fileMeta, 2));
-                $tmp[$i] = $fileMeta;
-                $i++;
-            } 
+        foreach($files as $file) {            
+            $this->addFileMetaIfExists($tmp, $i, $file, $request);
         }
         return $tmp;
     }
@@ -113,6 +84,45 @@ class FileRepository extends Repository {
         }
     }
 
+    
+    
+    private function addFileMetaIfExists(&$array, &$i, $file, $request) {
+        $base = str_replace("typo3/", "", $request->getBaseUri());
+        if(Helper::url_exists($base . $file->getOriginalResource()->getPublicUrl())) {
+            $parentParams = array();
+            $parentUid = $file->getUid();
+            $parentParams[0] = $this->setParentParam($file, "title");
+            $parentParams[1] = $this->setParentParam($file, "alternative");
+            $parentParams[2] = $this->setParentParam($file, "description");
+            $array[$i++] = $this->createFileMeta($file, true, $parentParams[0], $parentParams[1], $parentParams[2]);
+            
+            foreach($this->getFileReferences($file->getUid())->toArray() as $referencedFile) {
+                $this->addReferenceFileMetaIfExists($array, $i, $referencedFile, $parentUid, $parentParams);
+            }
+        }
+    }
+
+    private function addReferenceFileMetaIfExists(&$array, &$i, $reference, $parentUid, $parentParams) {
+        $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
+
+        $fileMeta = $this->createFileMeta($reference, false, $this->setParams("title", $repo, $reference), $this->setParams("alternative", $repo, $reference), $this->setParams("description", $repo, $reference));
+        $fileMeta->setParentData($parentParams);
+        $fileMeta->setParentUid($parentUid);
+
+        $array[$i++] = $fileMeta;
+    }
+
+    private function createFileMeta($file, $parent, $title, $alternative, $description) {
+        $fileMeta = new FileMeta();
+        $fileMeta->setUid($file->getUid());
+        $fileMeta->setIdentifier($file->getOriginalResource()->getIdentifier());
+        $fileMeta->setParent($parent);
+        $fileMeta->setTitle($title);
+        $fileMeta->setAlternative($alternative);
+        $fileMeta->setDescription($description);
+        return $fileMeta;
+    }
+
     private function execQuery($fileMeta) {
         try {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -137,12 +147,9 @@ class FileRepository extends Repository {
         }
     }
     
-    private function setParams($parent, $descr, $repo, $referencedFile, &$fileMeta, $index) {
+    private function setParams($descr, $repo, $referencedFile) {
         $properties = $repo->findFileReferenceByUid($referencedFile->getUid())->getProperties();
         if ($properties[$descr] == "") {
-            $tmp = $fileMeta->getParentData();
-            $tmp[$index] = $parent;
-            $fileMeta->setParentData($tmp);
             return "";
         } else {
             return $properties[$descr];

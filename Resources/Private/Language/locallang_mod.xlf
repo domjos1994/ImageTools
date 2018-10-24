@@ -12,6 +12,9 @@
             <trans-unit id="mlang_tabs_tab.metaData" xml:space="preserve">
                 <source>Meta-Data</source>
             </trans-unit>
+            <trans-unit id="mlang_tabs_tab.structure" xml:space="preserve">
+                <source>Structure</source>
+            </trans-unit>
             
             <trans-unit id="compressImages" xml:space="preserve">
                 <source>Compress with Tinify</source>

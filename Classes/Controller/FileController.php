@@ -6,7 +6,6 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 use DominicJoas\DjImagetools\Domain\Repository\FileRepository;
 use DominicJoas\DjImagetools\Domain\Model\File;
-use DominicJoas\DjImagetools\Domain\Model\Files;
 use DominicJoas\DjImagetools\Utility\Helper;
 
 class FileController extends ActionController {
@@ -23,8 +22,9 @@ class FileController extends ActionController {
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
         parent::injectConfigurationManager($configurationManager);
         $this->configurationManager = $configurationManager;
+        
+        // load user-settings from static template
         $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1");
-
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
         $this->width = $tsSettings['settings']['widthForAll'];
         $this->height = $tsSettings['settings']['heightForAll'];
@@ -32,14 +32,8 @@ class FileController extends ActionController {
         //$this->sameFolder = $tsSettings['settings']['sameFolder'];
         //$this->uploadPath = $tsSettings['settings']['uploadPath'];
 
-        $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath("dj_imagetools");
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/ResultMeta.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Result.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Source.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Client.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify.php');
-        \Tinify\setKey($this->tinifyKey);
+        // include tinify-library
+        Helper::includeLibTinify($this->tinifyKey);
     }
     
     public function listAction() {
@@ -48,23 +42,24 @@ class FileController extends ActionController {
         }
 
         $files = $this->fileRepository->getContentElementEntries()->toArray();
-        $filesObject = new Files();
-        $filesObject->setFiles($files);
+        $base = str_replace("typo3/", "", $this->request->getBaseUri());
+        $existingFiles = array();
+        $i = 0;
+        foreach ($files as $file) {
+            if(Helper::url_exists($base . $file->getOriginalResource()->getPublicUrl())) {
+                $existingFiles[$i] = $file;
+                $i++;
+            }
+        }
         
-        $this->view->assign('files', $filesObject);
+        $this->view->assign('files', $existingFiles);
         $this->view->assign('width', $this->width);
         $this->view->assign('height', $this->height);
         return $this->view->render();
     }
     
     public function updateAction(File $file) {
-        if($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) {
-            if($this->width==NULL || $this->width==-1) {
-                $file->setTxDjImagetoolsHeight(intval($this->height));
-            } else {
-                $file->setTxDjImagetoolsWidth(intval($this->width));
-            }
-        }
+        $this->changeSize($file);
         
         $height = $file->getTxDjImagetoolsHeight();
         $width = $file->getTxDjImagetoolsWidth();
@@ -76,7 +71,7 @@ class FileController extends ActionController {
         $source = $this->setSource($height, $width, $tinifySource);
         $file->getOriginalResource()->setContents($source->toBuffer());
         $file->setTxDjImagetoolsCompressed(1);
-        
+
         $this->fileRepository->save($file);
        
         $this->redirect("list");
@@ -84,26 +79,25 @@ class FileController extends ActionController {
     
     public function updateAllAction() {
         $files = $this->fileRepository->getContentElementEntries()->toArray();
+        $base = str_replace("typo3/", "", $this->request->getBaseUri());
         
         foreach($files as $file) {
-            if($this->width==NULL || $this->width==-1) {
-                $file->setTxDjImagetoolsHeight(intval($this->height));
-            } else {
-                $file->setTxDjImagetoolsWidth(intval($this->width));
+            if(Helper::url_exists($base . $file->getOriginalResource()->getPublicUrl())) {
+                $this->changeSize($file, true);
+
+                $height = $file->getTxDjImagetoolsHeight();
+                $width = $file->getTxDjImagetoolsWidth();
+                $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
+
+                $tmp = $this->fileRepository->getContentElementEntries($file->getUid())->toArray();
+                $file->setOriginalResource($tmp[0]->getOriginalResource());
+
+                $source = $this->setSource($height, $width, $tinifySource);
+                $file->getOriginalResource()->setContents($source->toBuffer());
+                $file->setTxDjImagetoolsCompressed(1);
+
+                $this->fileRepository->save($file);
             }
-            
-            $height = $file->getTxDjImagetoolsHeight();
-            $width = $file->getTxDjImagetoolsWidth();
-            $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
-
-            $tmp = $this->fileRepository->getContentElementEntries($file->getUid())->toArray();
-            $file->setOriginalResource($tmp[0]->getOriginalResource());
-
-            $source = $this->setSource($height, $width, $tinifySource);
-            $file->getOriginalResource()->setContents($source->toBuffer());
-            $file->setTxDjImagetoolsCompressed(1);
-
-            $this->fileRepository->save($file);
         }
         $this->redirect("list");
     }
@@ -140,6 +134,22 @@ class FileController extends ActionController {
             
         }*/
         return $file->getOriginalResource()->getIdentifier();
+    }
+    
+    private function changeSize(&$file, $all = false) {
+        if(($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) || $all) {
+            $file->setTxDjImagetoolsWidth(-1);
+            $file->setTxDjImagetoolsHeight(-1);
+            if($this->width==NULL || $this->width==-1) {
+                $file->setTxDjImagetoolsHeight(intval($this->height));
+            } else {
+                $file->setTxDjImagetoolsWidth(intval($this->width));
+            }
+        } else if($file->getTxDjImagetoolsWidth()==NULL) {
+            $file->setTxDjImagetoolsWidth(-1);
+        } else {
+          $file->setTxDjImagetoolsHeight(-1);  
+        }
     }
 }
 

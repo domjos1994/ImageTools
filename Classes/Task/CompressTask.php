@@ -3,6 +3,7 @@ namespace DominicJoas\DjImagetools\Task;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use DominicJoas\DjImagetools\Utility\Helper;
 
 class CompressTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
     private $objectManager;
@@ -37,15 +38,7 @@ class CompressTask extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
         $configurationManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::class);
         $this->array = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1")['settings'];
         
-        $extManUtility = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::class);
-        $extPath = $extManUtility::extPath("dj_imagetools");
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Exception.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/ResultMeta.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Result.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Source.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify/Client.php');
-        require_once($extPath . 'Resources/Private/PHP/lib/Tinify.php');
-        \Tinify\setKey($this->array['tinifyKey']);
+        Helper::includeLibTinify($this->array['tinifyKey']);
     }
     
     private function updateFile($file, $persistenceManager) {
