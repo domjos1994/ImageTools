@@ -62,6 +62,13 @@
             <trans-unit id="metaData.change" xml:space="preserve">
                 <source>Change</source>
             </trans-unit>
+            
+            <trans-unit id="structure" xml:space="preserve">
+                <source>Compare images and change structure</source>
+            </trans-unit>
+            <trans-unit id="structure.percentage" xml:space="preserve">
+                <source>Percentage</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

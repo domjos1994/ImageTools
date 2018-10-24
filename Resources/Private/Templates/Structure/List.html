@@ -18,43 +18,33 @@
             </div>
         </div>
         <div class="tx_dj_imagetools module-body t3js-module-body">
-            <h2><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData"/></h2>
+            <h2><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure"/></h2>
             <f:flashMessages />
             <table border="1" class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.parent"/></th>
+                        <th></th>
                         <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.reference"/></th>
-                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.title"/></th>
-                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.alternative"/></th>
-                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.description"/></th>
-                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.change"/></th>
+                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.percentage"/></th>
                     </tr>
                 </thead>
                 <tbody>
                     <f:for each="{files}" as="file" iteration="objIterator">
-                        <f:form controller="Structure" action="update" name="file" object="{file}">
+                        <f:form controller="Structure" action="list" name="selectedfile" object="{file}">
                             <tr>
                                 <f:form.hidden property='identifier' value='{file.identifier}'/>
                                 <f:form.hidden property='uid' value='{file.uid}'/>
-                                <f:form.hidden property='parentUid' value='{file.parentUid}'/>
-                                <f:form.hidden property='parent' value='{file.parent}'/>
-                                <f:if condition="{file.parent}">
-                                    <f:then>
-                                        <td>{file.identifier}</td>
-                                        <td></td>
-                                    </f:then>
-
-                                    <f:else>
-                                        <td></td>
-                                        <td>{file.identifier}</td>
-                                    </f:else>
-                                </f:if> 
-                                <td><f:form.textfield class='form-control {f:if(condition: "{file.title} == \"\"", then: "error")}'  property="title" value="{file.title}" placeholder="{file.parentData.0}"/></td>
-                                <td><f:form.textfield class='form-control {f:if(condition: "{file.alternative} == \"\"", then: "error")}' property="alternative" value="{file.alternative}" placeholder="{file.parentData.1}"/></td>
-                                <td><f:form.textarea rows='1' class='form-control {f:if(condition: "{file.description} == \"\"", then: "error")}' property="description" value="{file.description}" placeholder="{file.parentData.2}"/></td>
-                                <td><f:form.button type='submit' class="btn btn-primary col-md-12" value=""><core:icon identifier='actions-document-save' size="small" state="disabled"><i class='fa fa-save'></i></core:icon></f:form.button></td>
+                                <td><f:form.button type="submit" class="btn btn-primary"><i class='fa fa-folder-open'></i></f:form.button></td>
+                                <td>{file.identifier}</td>
+                                <td></td>
                             </tr>
+                            <f:for each="{file.comparableFiles}" as="comarableFile">
+                                <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")}'>
+                                    <td></td>
+                                    <td>{comarableFile.1}</td>
+                                    <td>{f:if(condition: "{comarableFile.2} == 0", then: "100", else: "{comarableFile.2}")} %</td>
+                                </tr>
+                            </f:for>
                         </f:form>
                     </f:for>
                 </tbody>

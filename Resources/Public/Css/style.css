@@ -26,8 +26,19 @@ td.image.show img {
     animation: spin 2s linear infinite;
 }
 
-input.form-control.error {
+input.form-control.error,
+textarea.form-control.error {
     border-color: red;
+}
+
+tr.sub {
+    display: none;
+    visibility: hidden;
+}
+
+tr.show {
+    display: table-row!important;
+    visibility: visible;
 }
 
 @keyframes spin {

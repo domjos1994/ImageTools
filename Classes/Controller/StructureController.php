@@ -6,7 +6,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 use DominicJoas\DjImagetools\Domain\Repository\FileRepository;
-use DominicJoas\DjImagetools\Domain\Model\FileMeta;
+use DominicJoas\DjImagetools\Domain\Model\ComparableFile;
 use DominicJoas\DjImagetools\Utility\Helper;
 use Imagick;
 
@@ -25,35 +25,55 @@ class StructureController extends ActionController {
         
     }
     
-    public function listAction() {
-        $metaDatas = array();
+    public function listAction(ComparableFile $selectedfile = NULL) {
         $i = 0;
         foreach($this->listExistingFiles() as $file) {
-            $metaData = new FileMeta();
-            $metaData->setIdentifier($file->getOriginalResource()->getIdentifier());
-            $metaData->setParent(true);
-            $metaDatas[$i++] = $metaData;
+            $comparableFile = new ComparableFile();
+            $comparableFile->setUid($file->getUid());
+            $comparableFile->setIdentifier($file->getOriginalResource()->getIdentifier());
             
+            $j = 0;
             foreach($this->listExistingFiles() as $comparedFile) {
-                
                 if($file->getUid()!=$comparedFile->getUid()) {
-                    $image1 = new Imagick($this->base . $file->getOriginalResource()->getPublicUrl());
-                    $image2 = new Imagick($this->base . $comparedFile->getOriginalResource()->getPublicUrl());
-                    $result = $image1->compareImages($image2, Imagick::METRIC_MEANSQUAREERROR);
-                    
-                    $subMetaData = new FileMeta();
-                    $subMetaData->setIdentifier($comparedFile->getOriginalResource()->getIdentifier());
-                    $subMetaData->setParent(false);
-                    $subMetaData->setTitle($result);
-                    $metaDatas[$i++] = $subMetaData;
+                    $images[$j][0] = $comparedFile->getUid();
+                    $images[$j][1] = $comparedFile->getOriginalResource()->getIdentifier();
+                    $images[$j++][2] = $this->compare($selectedfile, $file, $comparedFile);
                 }
+                
             }
+            $comparableFile->setComparableFiles($images);
+            $comparables[$i++] = $comparableFile;
         }
         
-        $this->view->assign('files', $metaDatas);
+        $this->view->assign('files', $comparables);
+        $this->view->assign('selected', $selectedfile);
         return $this->view->render();
     }
     
+    private function compare($selectedfile, $file1, $file2) {
+        if($selectedfile!=NULL) {
+            if($selectedfile->getUid()==$file1->getUid()) {
+                return round(100*floatval($this->compareImages($file1, $file2)),2);
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    private function compareImages($file1, $file2) {
+        try {
+            $image1 = new Imagick($this->base . $file1->getOriginalResource()->getPublicUrl());
+            $image2 = new Imagick($this->base . $file2->getOriginalResource()->getPublicUrl());
+            $result = $image1->compareImages($image2, Imagick::METRIC_MEANABSOLUTEERROR);
+
+            return $result[1];
+        } catch (ImagickException $ex) {
+            return $ex->getMessage();
+        }
+    }
+
     private function listExistingFiles() {
         $this->base = str_replace("typo3/", "", $this->request->getBaseUri());
         $files = $this->fileRepository->getAllEntries()->toArray();
@@ -61,8 +81,7 @@ class StructureController extends ActionController {
         $i = 0;
         foreach ($files as $file) {
             if(Helper::url_exists($this->base . $file->getOriginalResource()->getPublicUrl())) {
-                $existingFiles[$i] = $file;
-                $i++;
+                $existingFiles[$i++] = $file;
             }
         }
         return $existingFiles;
