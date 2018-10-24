@@ -16,3 +16,15 @@ function toggleLoaderAll() {
 }
 
 
+function changeColorOfRow() {
+    $("tr.sub").each(function(){
+       var classes = $(this).attr("class");
+       var classArray = classes.split(" ");
+       for(var i = 0; i<=classArray.length-1; i++) {
+           if(classArray[i].startsWith("color")) {
+               var number = classArray[i].replac("color", "");
+               $(this).attr("style", "background-color: rgb(255, 255," + ((100-number)/100)*255 + ");");
+           }
+       }
+    });
+}

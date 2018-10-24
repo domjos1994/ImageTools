@@ -66,8 +66,8 @@
             <trans-unit id="structure" xml:space="preserve">
                 <source>Compare images and change structure</source>
             </trans-unit>
-            <trans-unit id="structure.percentage" xml:space="preserve">
-                <source>Percentage</source>
+            <trans-unit id="structure.difference" xml:space="preserve">
+                <source>Difference</source>
             </trans-unit>
         </body>
     </file>

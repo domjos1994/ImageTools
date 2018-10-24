@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
-      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
+      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      onload="changeColorOfRow()">
     <f:be.container includeCssFiles="{0: '{f:uri.resource(path:\'Css/style.css\')}'}" includeJsFiles="{0: '{f:uri.resource(path:\'Js/script.js\')}'}">
         <div id="typo3-docheader">
             <div class="typo3-docheader-functions">
@@ -25,7 +26,7 @@
                     <tr>
                         <th></th>
                         <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.reference"/></th>
-                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.percentage"/></th>
+                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.difference"/></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,15 +35,15 @@
                             <tr>
                                 <f:form.hidden property='identifier' value='{file.identifier}'/>
                                 <f:form.hidden property='uid' value='{file.uid}'/>
-                                <td><f:form.button type="submit" class="btn btn-primary"><i class='fa fa-folder-open'></i></f:form.button></td>
+                                <td><f:form.button type="submit" class="btn btn-primary" onclick="changeColorOfRow()"><i class='fa fa-folder-open'></i></f:form.button></td>
                                 <td>{file.identifier}</td>
                                 <td></td>
                             </tr>
                             <f:for each="{file.comparableFiles}" as="comarableFile">
-                                <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")}'>
+                                <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")} color{comarableFile.2}'>
                                     <td></td>
                                     <td>{comarableFile.1}</td>
-                                    <td>{f:if(condition: "{comarableFile.2} == 0", then: "100", else: "{comarableFile.2}")} %</td>
+                                    <td>{f:if(condition: "{comarableFile.2} == 0", then: "0", else: "{comarableFile.2}")} %</td>
                                 </tr>
                             </f:for>
                         </f:form>

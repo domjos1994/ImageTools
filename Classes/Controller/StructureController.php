@@ -53,7 +53,7 @@ class StructureController extends ActionController {
     private function compare($selectedfile, $file1, $file2) {
         if($selectedfile!=NULL) {
             if($selectedfile->getUid()==$file1->getUid()) {
-                return round(100*floatval($this->compareImages($file1, $file2)),2);
+                return round(100*floatval($this->compareImages($file1, $file2)[1]),2);
             } else {
                 return 0;
             }
@@ -68,7 +68,7 @@ class StructureController extends ActionController {
             $image2 = new Imagick($this->base . $file2->getOriginalResource()->getPublicUrl());
             $result = $image1->compareImages($image2, Imagick::METRIC_MEANABSOLUTEERROR);
 
-            return $result[1];
+            return $result;
         } catch (ImagickException $ex) {
             return $ex->getMessage();
         }
