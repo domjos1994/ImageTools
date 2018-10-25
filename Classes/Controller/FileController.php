@@ -11,7 +11,7 @@ use DominicJoas\DjImagetools\Utility\Helper;
 class FileController extends ActionController {
     private $tinifyKey = '';
     private $width, $height;
-    //private $overwrite, $sameFolder, $uploadPath;
+    private $overwrite, $sameFolder, $uploadPath;
     private $fileRepository;
     protected $configurationManager;
 
@@ -28,9 +28,9 @@ class FileController extends ActionController {
         $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
         $this->width = $tsSettings['settings']['widthForAll'];
         $this->height = $tsSettings['settings']['heightForAll'];
-        //$this->overwrite = $tsSettings['settings']['overwrite'];
-        //$this->sameFolder = $tsSettings['settings']['sameFolder'];
-        //$this->uploadPath = $tsSettings['settings']['uploadPath'];
+        $this->overwrite = $tsSettings['settings']['overwrite'];
+        $this->sameFolder = $tsSettings['settings']['sameFolder'];
+        $this->uploadPath = $tsSettings['settings']['uploadPath'];
 
         // include tinify-library
         Helper::includeLibTinify($this->tinifyKey);
@@ -69,10 +69,7 @@ class FileController extends ActionController {
         $file->setOriginalResource($tmp[0]->getOriginalResource());
         
         $source = $this->setSource($height, $width, $tinifySource);
-        $file->getOriginalResource()->setContents($source->toBuffer());
-        $file->setTxDjImagetoolsCompressed(1);
-
-        $this->fileRepository->save($file);
+        $this->saveFile($file, $source);
        
         $this->redirect("list");
     }
@@ -93,10 +90,7 @@ class FileController extends ActionController {
                 $file->setOriginalResource($tmp[0]->getOriginalResource());
 
                 $source = $this->setSource($height, $width, $tinifySource);
-                $file->getOriginalResource()->setContents($source->toBuffer());
-                $file->setTxDjImagetoolsCompressed(1);
-
-                $this->fileRepository->save($file);
+                $this->saveFile($file, $source);
             }
         }
         $this->redirect("list");
@@ -127,15 +121,6 @@ class FileController extends ActionController {
         return $source;
     }
     
-    private function changeFile($file) {
-        /*if(intval($this->overwrite)==0) {
-            $content = $file->getOriginalResource()->getIdentifier();
-            $file->getOriginalResource()->setIdentifier("tinified_" . $content);
-            
-        }*/
-        return $file->getOriginalResource()->getIdentifier();
-    }
-    
     private function changeSize(&$file, $all = false) {
         if(($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) || $all) {
             $file->setTxDjImagetoolsWidth(-1);
@@ -150,6 +135,43 @@ class FileController extends ActionController {
         } else {
           $file->setTxDjImagetoolsHeight(-1);  
         }
+    }
+    
+    private function saveFile($file, $source) {
+        if($this->overwrite) {
+           $file->getOriginalResource()->setContents($source->toBuffer());
+        } else {
+            $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+            $storage = $resourceFactory->getDefaultStorage();
+            $name = $file->getOriginalResource()->getName();
+            $newName = "tinify.". $name;
+            
+            $identifier = str_replace($name, "", $file->getOriginalResource()->getIdentifier());
+            $temp = tempnam(sys_get_temp_dir(), 'tinify');
+            file_put_contents($temp, $source->toBuffer());
+            
+            
+            $newFile = $storage->addFile($temp, $storage->getFolder($this->getIdentifier($storage, $identifier)), $newName);
+            $custFile = $this->fileRepository->getAllEntries($newFile->getUid())->toArray()[0];
+            $custFile->setTxDjImagetoolsCompressed(1);
+            $this->fileRepository->save($custFile);
+        }
+        
+        $file->setTxDjImagetoolsCompressed(1);
+        $this->fileRepository->save($file);
+    }
+    
+    private function getIdentifier($storage, $identifier) {
+        if(!$this->sameFolder) {
+            try {
+                if(!$storage->getFolder($identifier)) {
+                    return $storage->createFolder($this->uploadPath . $identifier)->getIdentifier();
+                }
+            } catch (TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException $ex) {
+                return $storage->getFolder($this->uploadPath . $identifier)->getIdentifier();
+            }
+        }
+        return $identifier;
     }
 }
 

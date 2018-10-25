@@ -1,3 +1,7 @@
+div.docheader-funcmenu select {
+    padding: 4px;
+}
+
 td.center,
 td.center .loader {
     text-align: center;

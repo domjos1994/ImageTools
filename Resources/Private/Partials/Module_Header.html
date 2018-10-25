@@ -1,0 +1,38 @@
+<div class="module-docheader t3js-module-docheader">
+    <div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation row">
+        <div class="module-docheader-bar-column-left col-xs-12 col-sm-3">
+            <div class="form-inline">
+                <div class="form-group form-group-sm">
+                    <f:be.buttons.csh />
+
+                    <f:be.menus.actionMenu>
+                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.compressImages')}" controller="File" action="list" />
+                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.metaData')}" controller="Meta" action="list" />
+                        <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.structure')}" controller="Structure" action="list" />
+                    </f:be.menus.actionMenu>
+                </div>
+            </div>
+        </div>
+        <div class="module-docheader-bar-column-right col-xs-12 col-sm-9 text-right">
+            <f:be.pagePath />
+        </div>
+    </div>
+    <div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons">
+        <div class='module-docheader-bar-column-left'>
+            <div class='btn-toolbar'>
+                <f:if condition='{template}=="file"'>
+                    <f:then>
+                        <f:link.action action="undo" class="btn btn-default btn-sm"><i class="fa fa-undo t3js-icon icon icon-size-small icon-state-default"></i></f:link.action>
+                    </f:then>
+                </f:if>
+            </div>
+        </div>
+        <div class="module-docheader-bar-column-right">
+            <div class="btn-toolbar">
+                <span class="btn btn-default btn-sm">
+                    <f:be.buttons.shortcut/>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

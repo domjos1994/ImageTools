@@ -45,6 +45,7 @@ class StructureController extends ActionController {
             $comparables[$i++] = $comparableFile;
         }
         
+        $this->view->assign("imagick", extension_loaded("imagick"));
         $this->view->assign('files', $comparables);
         $this->view->assign('selected', $selectedfile);
         return $this->view->render();
