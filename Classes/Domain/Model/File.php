@@ -33,7 +33,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
     protected $txDjImagetoolsHeight;
 
     public function __construct() {
-        parent::__construct();
+        //parent::__construct();
         $this->txDjImagetoolsCompressed = 0;
         $this->txDjImagetoolsHeight = -1;
         $this->txDjImagetoolsWidth = -1;

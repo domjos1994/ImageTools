@@ -1,4 +1,3 @@
-
 function toggleLoader($identifier) {
     document.getElementById("loader" + $identifier).classList.toggle("loader");
     document.getElementById("btn" + $identifier).disabled = true; 
@@ -28,3 +27,4 @@ function changeColorOfRow() {
        }
     });
 }
+

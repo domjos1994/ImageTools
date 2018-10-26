@@ -12,22 +12,24 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 class FileRepository extends Repository {
 
     public function getContentElementEntries($uid=0) {
+        $folderIdentifier = Helper::getFolIdent();
         $query = $this->createQuery();
         if($uid==0) {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND tx_dj_imagetools_compressed!=1");
+            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND tx_dj_imagetools_compressed!=1 AND identifier like '$folderIdentifier%'");
         } else {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND tx_dj_imagetools_compressed!=1 AND uid=$uid");
+            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND tx_dj_imagetools_compressed!=1 AND uid=$uid AND identifier like '$folderIdentifier%'");
         }
         $result = $query->execute();
         return $result;
     }
     
     public function getAllEntries($uid = 0) {
+        $folderIdentifier = Helper::getFolIdent();
         $query = $this->createQuery();
         if($uid==0) {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG');");
+            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG')  AND identifier like '$folderIdentifier%';");
         } else {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND uid=$uid;");
+            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND uid=$uid AND identifier like '$folderIdentifier%';");
         }
         $result = $query->execute();
         return $result;
@@ -40,6 +42,7 @@ class FileRepository extends Repository {
     }
     
     public function getFileReferences($fileUid=0) {
+        $folderIdentifier = Helper::getFolIdent();
         $query = $this->createQuery();
         if($fileUid==0) {
             $query->statement("SELECT * FROM sys_file_reference");

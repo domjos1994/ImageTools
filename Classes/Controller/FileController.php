@@ -9,9 +9,7 @@ use DominicJoas\DjImagetools\Domain\Model\File;
 use DominicJoas\DjImagetools\Utility\Helper;
 
 class FileController extends ActionController {
-    private $tinifyKey = '';
-    private $width, $height;
-    private $overwrite, $sameFolder, $uploadPath;
+    protected $settings;
     private $fileRepository;
     protected $configurationManager;
 
@@ -24,24 +22,18 @@ class FileController extends ActionController {
         $this->configurationManager = $configurationManager;
         
         // load user-settings from static template
-        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1");
-        $this->tinifyKey = $tsSettings['settings']['tinifyKey'];
-        $this->width = $tsSettings['settings']['widthForAll'];
-        $this->height = $tsSettings['settings']['heightForAll'];
-        $this->overwrite = $tsSettings['settings']['overwrite'];
-        $this->sameFolder = $tsSettings['settings']['sameFolder'];
-        $this->uploadPath = $tsSettings['settings']['uploadPath'];
+        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1")['settings'];
 
         // include tinify-library
-        Helper::includeLibTinify($this->tinifyKey);
+        Helper::includeLibTinify($this->settings['tinifyKey']);
     }
     
     public function listAction() {
-        if ($this->tinifyKey == NULL || $this->tinifyKey == "key") {
+        if ($this->settings['tinifyKey'] == NULL || $this->settings['tinifyKey'] == "key") {
             $this->addFlashMessage("No Tinify-Key was found in the configuration!", "No Key", Helper::getMessageType("error"), false);
         }
 
-        $files = $this->fileRepository->getContentElementEntries()->toArray();
+        $files = $this->fileRepository->getContentElementEntries(0)->toArray();
         $base = str_replace("typo3/", "", $this->request->getBaseUri());
         $existingFiles = array();
         $i = 0;
@@ -52,9 +44,10 @@ class FileController extends ActionController {
             }
         }
         
+        $this->view->assign('path', Helper::getFolIdent());
         $this->view->assign('files', $existingFiles);
-        $this->view->assign('width', $this->width);
-        $this->view->assign('height', $this->height);
+        $this->view->assign('width', $this->settings['widthForAll']);
+        $this->view->assign('height', $this->settings['heightForAll']);
         return $this->view->render();
     }
     
@@ -69,7 +62,7 @@ class FileController extends ActionController {
         $file->setOriginalResource($tmp[0]->getOriginalResource());
         
         $source = $this->setSource($height, $width, $tinifySource);
-        $this->saveFile($file, $source);
+        Helper::saveFile($file, $source, $this->settings, $this->fileRepository);
        
         $this->redirect("list");
     }
@@ -90,7 +83,7 @@ class FileController extends ActionController {
                 $file->setOriginalResource($tmp[0]->getOriginalResource());
 
                 $source = $this->setSource($height, $width, $tinifySource);
-                $this->saveFile($file, $source);
+                Helper::saveFile($file, $source, $this->settings, $this->fileRepository);
             }
         }
         $this->redirect("list");
@@ -125,53 +118,16 @@ class FileController extends ActionController {
         if(($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) || $all) {
             $file->setTxDjImagetoolsWidth(-1);
             $file->setTxDjImagetoolsHeight(-1);
-            if($this->width==NULL || $this->width==-1) {
-                $file->setTxDjImagetoolsHeight(intval($this->height));
+            if($this->settings['widthForAll']==NULL || $this->settings['widthForAll']==-1) {
+                $file->setTxDjImagetoolsHeight(intval($this->settings['heightForAll']));
             } else {
-                $file->setTxDjImagetoolsWidth(intval($this->width));
+                $file->setTxDjImagetoolsWidth(intval($this->settings['widthForAll']));
             }
         } else if($file->getTxDjImagetoolsWidth()==NULL) {
             $file->setTxDjImagetoolsWidth(-1);
         } else {
           $file->setTxDjImagetoolsHeight(-1);  
         }
-    }
-    
-    private function saveFile($file, $source) {
-        if($this->overwrite) {
-           $file->getOriginalResource()->setContents($source->toBuffer());
-        } else {
-            $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
-            $storage = $resourceFactory->getDefaultStorage();
-            $name = $file->getOriginalResource()->getName();
-            $newName = "tinify.". $name;
-            
-            $identifier = str_replace($name, "", $file->getOriginalResource()->getIdentifier());
-            $temp = tempnam(sys_get_temp_dir(), 'tinify');
-            file_put_contents($temp, $source->toBuffer());
-            
-            
-            $newFile = $storage->addFile($temp, $storage->getFolder($this->getIdentifier($storage, $identifier)), $newName);
-            $custFile = $this->fileRepository->getAllEntries($newFile->getUid())->toArray()[0];
-            $custFile->setTxDjImagetoolsCompressed(1);
-            $this->fileRepository->save($custFile);
-        }
-        
-        $file->setTxDjImagetoolsCompressed(1);
-        $this->fileRepository->save($file);
-    }
-    
-    private function getIdentifier($storage, $identifier) {
-        if(!$this->sameFolder) {
-            try {
-                if(!$storage->getFolder($identifier)) {
-                    return $storage->createFolder($this->uploadPath . $identifier)->getIdentifier();
-                }
-            } catch (TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException $ex) {
-                return $storage->getFolder($this->uploadPath . $identifier)->getIdentifier();
-            }
-        }
-        return $identifier;
     }
 }
 

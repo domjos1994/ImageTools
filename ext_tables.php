@@ -6,7 +6,7 @@
     call_user_func(function($extKey) {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             'DominicJoas.' . $extKey,
-            'web',
+            'file',
             'tx_imagetools_module1',
             'bottom',
             ['File' => 'list, update, updateAll, undo', 'Meta' => 'list, update', 'Structure' => 'list'],

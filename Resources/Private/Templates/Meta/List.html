@@ -39,7 +39,14 @@
                                 <td><f:form.textfield class='form-control {f:if(condition: "{file.title} == \"\"", then: "error")}'  property="title" value="{file.title}" placeholder="{file.parentData.0}"/></td>
                                 <td><f:form.textfield class='form-control {f:if(condition: "{file.alternative} == \"\"", then: "error")}' property="alternative" value="{file.alternative}" placeholder="{file.parentData.1}"/></td>
                                 <td><f:form.textarea rows='1' class='form-control {f:if(condition: "{file.description} == \"\"", then: "error")}' property="description" value="{file.description}" placeholder="{file.parentData.2}"/></td>
-                                <td><f:form.button type='submit' class="btn btn-primary col-md-12" value=""><core:icon identifier='actions-document-save' size="small" state="disabled"><i class='fa fa-save'></i></core:icon></f:form.button></td>
+                                <td>
+                                    <div class="btn-group col-md-12">
+                                        <f:form.button type='submit' class="btn btn-primary col-md-6" value="">
+                                            <i class='fa fa-save'></i> Save
+                                        </f:form.button>
+                                        <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
+                                    </div>
+                                </td>
                             </tr>
                         </f:form>
                     </f:for>

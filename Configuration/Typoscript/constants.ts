@@ -7,7 +7,7 @@ module.tx_imagetools_module1 {
         # cat=tx_imagetools_module1/settings/c; type=int; label=Height: Set the height for all images
         heightForAll = -1
         # cat=tx_imagetools_module1/settings/d; type=boolean; label=Overwrite: Overwrite the uncompressed Images
-        overwrite = 1
+        overwrite = 0
         # cat=tx_imagetools_module1/settings/e; type=boolean; label=Same Folder: Add compressed Images to same folder
         sameFolder = 1
         # cat=tx_imagetools_module1/settings/f; type=string; label=Path To Folder: Add path to the Folder

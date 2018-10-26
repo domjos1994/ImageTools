@@ -18,7 +18,7 @@ $EM_CONF[$_EXTKEY] = array (
     'autoload' => array (
         'psr-4' => array ('DominicJoas\\DjImagetools\\' => 'Classes',),
     ),
-    'uploadfolder' => false,
+    'uploadfolder' => true,
     'createDirs' => NULL,
     'clearcacheonload' => true,
 );
