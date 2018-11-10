@@ -5,6 +5,7 @@ namespace DominicJoas\DjImagetools\Domain\Repository;
 use DominicJoas\DjImagetools\Domain\Model\FileMeta;
 use DominicJoas\DjImagetools\Utility\Helper;
 
+use Tinify\Exception;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -42,12 +43,11 @@ class FileRepository extends Repository {
     }
     
     public function getFileReferences($fileUid=0) {
-        $folderIdentifier = Helper::getFolIdent();
         $query = $this->createQuery();
         if($fileUid==0) {
-            $query->statement("SELECT * FROM sys_file_reference");
+            $query->statement("SELECT * FROM sys_file_reference WHERE deleted=0");
         } else {
-            $query->statement("SELECT * FROM sys_file_reference WHERE uid_local=$fileUid");
+            $query->statement("SELECT * FROM sys_file_reference WHERE deleted=0 AND uid_local=$fileUid");
         }
         $result = $query->execute();
         return $result;
@@ -55,7 +55,7 @@ class FileRepository extends Repository {
     
     public function getFilesAndReferences($request) {
         $tmp = array();
-        
+
         $files = $this->getAllEntries()->toArray();
         $i = 0;
         foreach($files as $file) {            
@@ -78,6 +78,13 @@ class FileRepository extends Repository {
                 $array['description'] = $fileMeta->getDescription();
                 $metadata->update($fileMeta->getUid(), $array);
             }
+
+            if($fileMeta->getChildren()) {
+                foreach ($this->getFileReferences($fileMeta->getUid())->toArray() as $referencedFile) {
+                    $fileMeta->setUid($referencedFile->getUid());
+                    $this->execQuery($fileMeta);
+                }
+            }
         } else {
             foreach ($this->getFileReferences($fileMeta->getParentUid())->toArray() as $referencedFile) {
                 if($referencedFile->getUid()==$fileMeta->getUid()) {
@@ -94,31 +101,35 @@ class FileRepository extends Repository {
         if(Helper::url_exists($base . $file->getOriginalResource()->getPublicUrl())) {
             $parentParams = array();
             $parentUid = $file->getUid();
+            $identifier = $file->getOriginalResource()->getIdentifier();
             $parentParams[0] = $this->setParentParam($file, "title");
             $parentParams[1] = $this->setParentParam($file, "alternative");
             $parentParams[2] = $this->setParentParam($file, "description");
-            $array[$i++] = $this->createFileMeta($file, true, $parentParams[0], $parentParams[1], $parentParams[2]);
-            
-            foreach($this->getFileReferences($file->getUid())->toArray() as $referencedFile) {
-                $this->addReferenceFileMetaIfExists($array, $i, $referencedFile, $parentUid, $parentParams);
+            $array[$i++] = $this->createFileMeta($file, true, $parentParams[0], $parentParams[1], $parentParams[2], $identifier);
+
+            $obj = $this->getFileReferences($file->getUid());
+            if($obj!=null) {
+                foreach($obj->toArray() as $referencedFile) {
+                    $this->addReferenceFileMetaIfExists($array, $i, $referencedFile, $parentUid, $parentParams, $identifier);
+                }
             }
         }
     }
 
-    private function addReferenceFileMetaIfExists(&$array, &$i, $reference, $parentUid, $parentParams) {
+    private function addReferenceFileMetaIfExists(&$array, &$i, $reference, $parentUid, $parentParams, $identifier) {
         $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
 
-        $fileMeta = $this->createFileMeta($reference, false, $this->setParams("title", $repo, $reference), $this->setParams("alternative", $repo, $reference), $this->setParams("description", $repo, $reference));
+        $fileMeta = $this->createFileMeta($reference, false, $this->setParams("title", $repo, $reference->getUid()), $this->setParams("alternative", $repo, $reference->getUid()), $this->setParams("description", $repo, $reference->getUid()), $identifier);
         $fileMeta->setParentData($parentParams);
         $fileMeta->setParentUid($parentUid);
 
         $array[$i++] = $fileMeta;
     }
 
-    private function createFileMeta($file, $parent, $title, $alternative, $description) {
+    private function createFileMeta($file, $parent, $title, $alternative, $description, $identifier) {
         $fileMeta = new FileMeta();
         $fileMeta->setUid($file->getUid());
-        $fileMeta->setIdentifier($file->getOriginalResource()->getIdentifier());
+        $fileMeta->setIdentifier($identifier);
         $fileMeta->setParent($parent);
         $fileMeta->setTitle($title);
         $fileMeta->setAlternative($alternative);
@@ -127,19 +138,15 @@ class FileRepository extends Repository {
     }
 
     private function execQuery($fileMeta) {
-        try {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-            $queryBuilder->update('sys_file_reference')
-                ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($fileMeta->getUid()))
-                )
-                ->set('title', $fileMeta->getTitle())
-                ->set('description', $fileMeta->getDescription())
-                ->set('alternative', $fileMeta->getAlternative())
-                ->execute();
-        } catch (Exception $ex) {
-            
-        }
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->update('sys_file_reference')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($fileMeta->getUid()))
+            )
+            ->set('title', $fileMeta->getTitle())
+            ->set('description', $fileMeta->getDescription())
+            ->set('alternative', $fileMeta->getAlternative())
+            ->execute();
     }
 
     private function setParentParam($file, $descr) {
@@ -150,12 +157,19 @@ class FileRepository extends Repository {
         }
     }
     
-    private function setParams($descr, $repo, $referencedFile) {
-        $properties = $repo->findFileReferenceByUid($referencedFile->getUid())->getProperties();
-        if ($properties[$descr] == "") {
-            return "";
-        } else {
-            return $properties[$descr];
+    private function setParams($descr, $repo, $parentUid) {
+        try {
+            $obj = $repo->findFileReferenceByUid($parentUid);
+            if($obj!=null) {
+                $properties = $obj->getProperties();
+                if ($properties[$descr] == "") {
+                    return "";
+                } else {
+                    return $properties[$descr];
+                }
+            }
+        } catch (Exception $ex) {
+            return $ex;
         }
     }
 }

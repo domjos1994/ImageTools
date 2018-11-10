@@ -50,6 +50,9 @@
             <trans-unit id="metaData.reference" xml:space="preserve">
                 <source>Reference</source>
             </trans-unit>
+            <trans-unit id="metaData.updateReferences" xml:space="preserve">
+                <source>Update references</source>
+            </trans-unit>
             <trans-unit id="metaData.title" xml:space="preserve">
                 <source>Title</source>
             </trans-unit>

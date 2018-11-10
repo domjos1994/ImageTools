@@ -28,8 +28,8 @@
                                 <td><f:form.textfield id='height{file.uid}' class='form-control' property='txDjImagetoolsHeight' value='{f:if(condition: "{file.txDjImagetoolsHeight}!=-1", then:"{file.txDjImagetoolsHeight}", else: "")}' placeholder="{height}"/></td>
                                 <td>
                                     <div class="btn-group col-md-12">
-                                        <f:form.button class="btn btn-primary col-md-6" type='submit' onclick='toggleLoader({file.uid})'>
-                                            <i class='fa fa-compress'></i> <f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages.compressed"/>
+                                        <f:form.button class="btn btn-primary" type='submit' onclick='toggleLoader({file.uid})'>
+                                            <i class='fa fa-compress'></i>
                                         </f:form.button>
                                         <f:render partial="Info_Button" arguments="{identifier: file.originalResource.identifier}"/>
                                     </div>

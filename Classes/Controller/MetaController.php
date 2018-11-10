@@ -32,6 +32,7 @@ class MetaController extends ActionController {
     /**
      * 
      * @param FileMeta $file
+     * @throws
      */
     public function updateAction(FileMeta $file) {
         $this->fileRepository->saveMeta($file);

@@ -32,6 +32,13 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
     protected $parent;
 
     /**
+     * Update file and children
+     *
+     * @var boolean
+     */
+    protected $children;
+
+    /**
      * Title of meta
      *
      * @var string
@@ -63,6 +70,7 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
         $this->parentData[0] = "";
         $this->parentData[1] = "";
         $this->parentData[2] = "";
+        $this->children = false;
     }
 
     /**
@@ -114,19 +122,35 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
     }
 
     /**
-     * 
-     * @return boolean
-     */
+ *
+ * @return boolean
+ */
     public function getParent() {
         return $this->parent;
     }
 
     /**
-     * 
+     *
      * @param boolean $parent
      */
     public function setParent($parent) {
         $this->parent = $parent;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function getChildren() {
+        return $this->children;
+    }
+
+    /**
+     *
+     * @param boolean $children
+     */
+    public function setChildren($children) {
+        $this->children = $children;
     }
 
     /**

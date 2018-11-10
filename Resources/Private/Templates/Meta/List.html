@@ -28,7 +28,9 @@
                                 <f:if condition="{file.parent}">
                                     <f:then>
                                         <td>{file.identifier}</td>
-                                        <td></td>
+                                        <td>
+                                            <f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.updateReferences"/> <f:form.checkbox property="children" checked="{file.children}" value="true"/>
+                                        </td>
                                     </f:then>
 
                                     <f:else>
@@ -41,8 +43,8 @@
                                 <td><f:form.textarea rows='1' class='form-control {f:if(condition: "{file.description} == \"\"", then: "error")}' property="description" value="{file.description}" placeholder="{file.parentData.2}"/></td>
                                 <td>
                                     <div class="btn-group col-md-12">
-                                        <f:form.button type='submit' class="btn btn-primary col-md-6" value="">
-                                            <i class='fa fa-save'></i> Save
+                                        <f:form.button type='submit' class="btn btn-primary" value="">
+                                            <i class='fa fa-save'></i>
                                         </f:form.button>
                                         <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
                                     </div>
