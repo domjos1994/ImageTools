@@ -26,6 +26,7 @@ class StructureController extends ActionController {
     }
     
     public function listAction(ComparableFile $selectedfile = NULL) {
+
         $i = 0;
         foreach($this->listExistingFiles() as $file) {
             $comparableFile = new ComparableFile();
@@ -50,7 +51,21 @@ class StructureController extends ActionController {
         $this->view->assign('selected', $selectedfile);
         return $this->view->render();
     }
-    
+
+    /**
+     * @param int $uid
+     * @param int $parent
+     * @param string $identifier
+     * @throws
+     */
+    public function deleteAction($uid, $parent, $identifier) {
+        $this->fileRepository->delete($uid);
+        $comparableFile = new ComparableFile();
+        $comparableFile->setUid($parent);
+        $comparableFile->setIdentifier($identifier);
+        $this->redirect('list');
+    }
+
     private function compare($selectedfile, $file1, $file2) {
         if($selectedfile!=NULL) {
             if($selectedfile->getUid()==$file1->getUid()) {

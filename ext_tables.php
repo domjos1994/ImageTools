@@ -9,7 +9,7 @@
             'file',
             'tx_imagetools_module1',
             'bottom',
-            ['File' => 'list, update, updateAll, undo', 'Meta' => 'list, update', 'Structure' => 'list'],
+            ['File' => 'list, update, updateAll, undo', 'Meta' => 'list, update', 'Structure' => 'list, delete'],
             [
                 'icon' => 'EXT:dj_imagetools/Resources/Public/Icons/ImageTools.svg',
                 'labels' => 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf',

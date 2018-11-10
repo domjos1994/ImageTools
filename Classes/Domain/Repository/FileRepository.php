@@ -36,6 +36,12 @@ class FileRepository extends Repository {
         return $result;
     }
 
+    public function delete($uid) {
+        var_dump($uid);
+        foreach($this->getAllEntries($uid)->toArray() as $file) {
+            $this->remove($file);
+        }
+    }
 
     public function save($obj) {
         $this->update($obj);

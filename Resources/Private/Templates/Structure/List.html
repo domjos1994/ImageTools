@@ -15,6 +15,7 @@
                                 <th></th>
                                 <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.reference"/></th>
                                 <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.difference"/></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -23,15 +24,25 @@
                                     <tr>
                                         <f:form.hidden property='identifier' value='{file.identifier}'/>
                                         <f:form.hidden property='uid' value='{file.uid}'/>
-                                        <td><f:form.button type="submit" class="btn btn-primary" onclick="changeColorOfRow()"><i class='fa fa-folder-open'></i></f:form.button></td>
+                                        <td><f:form.button type="submit" class="btn btn-primary" onclick="toggleLoader({file.uid})"><i class='fa fa-folder-open'></i></f:form.button></td>
                                         <td>{file.identifier}</td>
                                         <td></td>
+                                        <td><div id="loader{file.uid}"></div></td>
                                     </tr>
-                                    <f:for each="{file.comparableFiles}" as="comarableFile">
-                                        <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")} color{comarableFile.2}'>
-                                            <td></td>
-                                            <td>{comarableFile.1}</td>
-                                            <td>{f:if(condition: "{comarableFile.2} == 0", then: "0", else: "{comarableFile.2}")} %</td>
+                                    <f:for each="{file.comparableFiles}" as="comparableFile">
+                                        <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")} color{comparableFile.2}'>
+                                            <td>
+                                                <f:if condition="{comparableFile.2}<=10.0">
+                                                    <f:then>
+                                                        <f:link.action action="delete" class="btn btn-primary" onclick="toggleLoader({comparableFile.0})" arguments="{uid:comparableFile.0,parent:file.uid,identifier:file.identifier}"><i class="fa fa-remove"></i></f:link.action>
+                                                    </f:then>
+                                                </f:if>
+                                            </td>
+                                            <td>{comparableFile.1}</td>
+                                            <td>{f:if(condition: "{comparableFile.2} == 0", then: "0", else: "{comparableFile.2}")} %</td>
+                                            <td>
+                                                <div id="loader{comparableFile.0}"></div>
+                                            </td>
                                         </tr>
                                     </f:for>
                                 </f:form>

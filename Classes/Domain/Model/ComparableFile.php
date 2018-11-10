@@ -22,6 +22,10 @@ class ComparableFile implements \TYPO3\CMS\Core\SingletonInterface {
      * @var array
      */
     protected $comparableFiles;
+
+    public function __construct() {
+        $this->comparableFiles = array();
+    }
     
     /**
      * 
