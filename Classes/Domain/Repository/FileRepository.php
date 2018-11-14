@@ -11,34 +11,35 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class FileRepository extends Repository {
-
-    public function getContentElementEntries($uid=0) {
-        $folderIdentifier = Helper::getFolIdent();
-        $query = $this->createQuery();
-        if($uid==0) {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND tx_dj_imagetools_compressed!=1 AND identifier like '$folderIdentifier%'");
-        } else {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND tx_dj_imagetools_compressed!=1 AND uid=$uid AND identifier like '$folderIdentifier%'");
-        }
-        $result = $query->execute();
-        return $result;
-    }
     
-    public function getAllEntries($uid = 0) {
-        $folderIdentifier = Helper::getFolIdent();
-        $query = $this->createQuery();
-        if($uid==0) {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG')  AND identifier like '$folderIdentifier%';");
+    public function getAllEntries($uid = 0, $unCompressed = false) {
+        $extensions = array('png', 'jpg', 'JPG', 'PNG', 'jpeg');
+        $folderIdentifier = $GLOBALS["_GET"]["id"];
+        $files = array();
+        $counter = 0;
+
+        if ($uid != 0) {
+            $files[0] = $this->findByUid($uid);
         } else {
-            $query->statement("SELECT * FROM sys_file WHERE (extension='png' or extension='jpg' or extension='JPG') AND uid=$uid AND identifier like '$folderIdentifier%';");
+            $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+            $tmpFiles = $resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
+
+            foreach ($tmpFiles as $tmp) {
+                if(in_array($tmp->getExtension(), $extensions)) {
+                    if($unCompressed) {
+                        $tmpFile = $this->findByUid($tmp->getUid());
+                        if($tmpFile->getTxDjImagetoolsCompressed()!=1) {
+                            $files[$counter++] = $tmpFile;
+                        }
+                    }
+                }
+            }
         }
-        $result = $query->execute();
-        return $result;
+        return $files;
     }
 
     public function delete($uid) {
-        var_dump($uid);
-        foreach($this->getAllEntries($uid)->toArray() as $file) {
+        foreach($this->getAllEntries($uid) as $file) {
             $this->remove($file);
         }
     }
@@ -62,7 +63,7 @@ class FileRepository extends Repository {
     public function getFilesAndReferences($request) {
         $tmp = array();
 
-        $files = $this->getAllEntries()->toArray();
+        $files = $this->getAllEntries();
         $i = 0;
         foreach($files as $file) {            
             $this->addFileMetaIfExists($tmp, $i, $file, $request);

@@ -92,7 +92,7 @@ class StructureController extends ActionController {
 
     private function listExistingFiles() {
         $this->base = str_replace("typo3/", "", $this->request->getBaseUri());
-        $files = $this->fileRepository->getAllEntries()->toArray();
+        $files = $this->fileRepository->getAllEntries();
         $existingFiles = array();
         $i = 0;
         foreach ($files as $file) {

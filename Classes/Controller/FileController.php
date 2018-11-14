@@ -3,6 +3,7 @@ namespace DominicJoas\DjImagetools\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 use DominicJoas\DjImagetools\Domain\Repository\FileRepository;
 use DominicJoas\DjImagetools\Domain\Model\File;
@@ -23,17 +24,21 @@ class FileController extends ActionController {
         
         // load user-settings from static template
         $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1")['settings'];
+    }
+
+    protected function initializeView(ViewInterface $view) {
+        parent::initializeView($view);
 
         // include tinify-library
         Helper::includeLibTinify($this->settings['tinifyKey']);
     }
-    
+
     public function listAction() {
         if ($this->settings['tinifyKey'] == NULL || $this->settings['tinifyKey'] == "key") {
             $this->addFlashMessage("No Tinify-Key was found in the configuration!", "No Key", Helper::getMessageType("error"), false);
         }
 
-        $files = $this->fileRepository->getContentElementEntries(0)->toArray();
+        $files = $this->fileRepository->getAllEntries(0, true);
         $base = str_replace("typo3/", "", $this->request->getBaseUri());
         $existingFiles = array();
         $i = 0;
@@ -58,7 +63,7 @@ class FileController extends ActionController {
         $width = $file->getTxDjImagetoolsWidth();
         $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
         
-        $tmp = $this->fileRepository->getContentElementEntries($file->getUid())->toArray();
+        $tmp = $this->fileRepository->getAllEntries($file->getUid(), true);
         $file->setOriginalResource($tmp[0]->getOriginalResource());
         
         $source = $this->setSource($height, $width, $tinifySource);
@@ -68,7 +73,7 @@ class FileController extends ActionController {
     }
     
     public function updateAllAction() {
-        $files = $this->fileRepository->getContentElementEntries()->toArray();
+        $files = $this->fileRepository->getAllEntries(0, true);
         $base = str_replace("typo3/", "", $this->request->getBaseUri());
         
         foreach($files as $file) {
@@ -79,7 +84,7 @@ class FileController extends ActionController {
                 $width = $file->getTxDjImagetoolsWidth();
                 $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
 
-                $tmp = $this->fileRepository->getContentElementEntries($file->getUid())->toArray();
+                $tmp = $this->fileRepository->getAllEntries($file->getUid(), true);
                 $file->setOriginalResource($tmp[0]->getOriginalResource());
 
                 $source = $this->setSource($height, $width, $tinifySource);

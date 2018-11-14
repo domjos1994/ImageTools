@@ -63,7 +63,7 @@ class Helper {
             
             
             $newFile = $storage->addFile($temp, $storage->getFolder(Helper::getIdentifier($storage, $identifier, $settings)), $newName);
-            $custFile = $this->fileRepository->getAllEntries($newFile->getUid())->toArray()[0];
+            $custFile = $fileRepository->getAllEntries($newFile->getUid())[0];
             $custFile->setTxDjImagetoolsCompressed(1);
             $fileRepository->save($custFile);
         }
@@ -91,5 +91,7 @@ class Helper {
         }
         return $identifier;
     }
+
+
 }
 
