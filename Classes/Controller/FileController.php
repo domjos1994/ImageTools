@@ -71,6 +71,14 @@ class FileController extends ActionController {
        
         $this->redirect("list");
     }
+
+    public function disableEntryAction() {
+        $file = $this->request->getArgument('file');
+        $files = $this->fileRepository->getAllEntries($file, true);
+        $files[0]->setTxDjImagetoolsCompressed(true);
+        $this->fileRepository->save($files[0]);
+        $this->redirect("list");
+    }
     
     public function updateAllAction() {
         $files = $this->fileRepository->getAllEntries(0, true);

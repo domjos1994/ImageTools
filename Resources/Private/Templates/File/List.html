@@ -28,6 +28,9 @@
                                 <td><f:form.textfield id='height{file.uid}' class='form-control' property='txDjImagetoolsHeight' value='{f:if(condition: "{file.txDjImagetoolsHeight}!=-1", then:"{file.txDjImagetoolsHeight}", else: "")}' placeholder="{height}"/></td>
                                 <td>
                                     <div class="btn-group col-md-12">
+                                        <f:link.action class="btn btn-primary btn-small" action="disableEntry" arguments="{file : file}">
+                                            <i class='fa fa-ban'></i>
+                                        </f:link.action>
                                         <f:form.button class="btn btn-primary" type='submit' onclick='toggleLoader({file.uid})'>
                                             <i class='fa fa-compress'></i>
                                         </f:form.button>

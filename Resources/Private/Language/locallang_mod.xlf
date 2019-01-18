@@ -40,6 +40,9 @@
             <trans-unit id="compressImages.compressAll" xml:space="preserve">
                 <source>Compress all</source>
             </trans-unit>
+            <trans-unit id="compressImages.alreadyCompressed" xml:space="preserve">
+                <source>Already compressed</source>
+            </trans-unit>
             
             <trans-unit id="metaData" xml:space="preserve">
                 <source>Optimize the Meta-Data of images</source>
