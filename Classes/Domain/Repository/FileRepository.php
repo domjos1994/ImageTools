@@ -37,6 +37,8 @@ class FileRepository extends Repository {
                         if($tmpFile->getTxDjImagetoolsCompressed()!=1) {
                             $files[$counter++] = $tmpFile;
                         }
+                    } else {
+                        $files[$counter++] = $this->findByUid($tmp->getUid());
                     }
                 }
             }
