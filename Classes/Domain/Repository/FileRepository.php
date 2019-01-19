@@ -18,10 +18,16 @@ class FileRepository extends Repository {
         $files = array();
         $counter = 0;
 
+
+
         if ($uid != 0) {
             $files[0] = $this->findByUid($uid);
         } else {
             $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+
+            if($folderIdentifier==null) {
+                $folderIdentifier = $resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
+            }
             $tmpFiles = $resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
 
             foreach ($tmpFiles as $tmp) {

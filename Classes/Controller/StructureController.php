@@ -49,6 +49,7 @@ class StructureController extends ActionController {
         $this->view->assign("imagick", extension_loaded("imagick"));
         $this->view->assign('files', $comparables);
         $this->view->assign('selected', $selectedfile);
+        $this->view->assign('path', Helper::getFolIdent());
         return $this->view->render();
     }
 

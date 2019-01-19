@@ -3,6 +3,7 @@ namespace DominicJoas\DjImagetools\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 use DominicJoas\DjImagetools\Domain\Repository\FileRepository;
@@ -11,7 +12,15 @@ use DominicJoas\DjImagetools\Utility\Helper;
 
 class FileController extends ActionController {
     protected $settings;
+
+    /**
+     * @var \DominicJoas\DjImagetools\Domain\Repository\FileRepository
+     */
     private $fileRepository;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     */
     protected $configurationManager;
 
     public function injectFileRepository(FileRepository $fileRepository) {
@@ -73,11 +82,16 @@ class FileController extends ActionController {
     }
 
     public function disableEntryAction() {
-        $file = $this->request->getArgument('file');
-        $files = $this->fileRepository->getAllEntries($file, true);
-        $files[0]->setTxDjImagetoolsCompressed(true);
-        $this->fileRepository->save($files[0]);
-        $this->redirect("list");
+        try {
+            $file = $this->request->getArgument('file');
+            $files = $this->fileRepository->getAllEntries($file, true);
+            $files[0]->setTxDjImagetoolsCompressed(true);
+            $this->fileRepository->save($files[0]);
+            $this->redirect("list");
+        } catch (NoSuchArgumentException $e) {
+            $this->redirect("list");
+        }
+
     }
     
     public function updateAllAction() {
@@ -127,7 +141,7 @@ class FileController extends ActionController {
         return $source;
     }
     
-    private function changeSize(&$file, $all = false) {
+    private function changeSize(File &$file, $all = false) {
         if(($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) || $all) {
             $file->setTxDjImagetoolsWidth(-1);
             $file->setTxDjImagetoolsHeight(-1);

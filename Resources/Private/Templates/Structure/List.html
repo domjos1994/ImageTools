@@ -3,7 +3,7 @@
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
       onload="changeColorOfRow()">
     <f:be.container includeCssFiles="{0: '{f:uri.resource(path:\'Css/style.css\')}'}" includeJsFiles="{0: '{f:uri.resource(path:\'Js/script.js\')}'}">
-        <f:render partial="Module_Header" arguments="{template: 'structure'}"/>
+        <f:render partial="Module_Header" arguments="{template: 'structure', path:path}"/>
         <div class="tx_dj_imagetools module-body t3js-module-body">
             <h2><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure"/></h2>
             <f:flashMessages />

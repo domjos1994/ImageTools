@@ -5,7 +5,7 @@
                 <div class="form-group form-group-sm">
                     <f:be.buttons.csh />
 
-                    <f:be.menus.actionMenu>
+                    <f:be.menus.actionMenu defaultController="File" additionalAttributes="{class: 'form-control', data-menu-identifier: 'file-DjImagetoolsTxImagetoolsModule1-jump-menu'}">
                         <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.compressImages')}" controller="File" action="list" />
                         <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.metaData')}" controller="Meta" action="list" />
                         <f:be.menus.actionMenuItem label="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.structure')}" controller="Structure" action="list" />

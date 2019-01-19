@@ -26,6 +26,7 @@ class MetaController extends ActionController {
     public function listAction() {
         $files = $this->fileRepository->getFilesAndReferences($this->request);
         $this->view->assign('files', $files);
+        $this->view->assign('path', Helper::getFolIdent());
         return $this->view->render();
     }
     
