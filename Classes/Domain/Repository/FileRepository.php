@@ -4,8 +4,17 @@ namespace DominicJoas\DjImagetools\Domain\Repository;
 
 use DominicJoas\DjImagetools\Domain\Model\FileMeta;
 use DominicJoas\DjImagetools\Utility\Helper;
+use DominicJoas\DjImagetools\Domain\Model\File;
 
-use Tinify\Exception;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
+use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -18,43 +27,114 @@ class FileRepository extends Repository {
         $files = array();
         $counter = 0;
 
+        try {
+            if ($uid != 0) {
+                $files[0] = $this->findByUid($uid);
+            } else {
+                $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
 
+                if ($folderIdentifier == null) {
+                    $folderIdentifier = $resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
+                }
+                $tmpFiles = $resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
 
-        if ($uid != 0) {
-            $files[0] = $this->findByUid($uid);
-        } else {
-            $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
-
-            if($folderIdentifier==null) {
-                $folderIdentifier = $resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
-            }
-            $tmpFiles = $resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
-
-            foreach ($tmpFiles as $tmp) {
-                if(in_array($tmp->getExtension(), $extensions)) {
-                    if($unCompressed) {
-                        $tmpFile = $this->findByUid($tmp->getUid());
-                        if($tmpFile->getTxDjImagetoolsCompressed()!=1) {
-                            $files[$counter++] = $tmpFile;
+                foreach ($tmpFiles as $tmp) {
+                    if (in_array($tmp->getExtension(), $extensions)) {
+                        if ($unCompressed) {
+                            $tmpFile = $this->findByUid($tmp->getUid());
+                            if ($tmpFile->getTxDjImagetoolsCompressed() != 1) {
+                                $files[$counter++] = $tmpFile;
+                            }
+                        } else {
+                            $files[$counter++] = $this->findByUid($tmp->getUid());
                         }
-                    } else {
-                        $files[$counter++] = $this->findByUid($tmp->getUid());
                     }
                 }
             }
+        } catch (InsufficientFolderAccessPermissionsException $e) {
+            return $e;
+        } catch (\Exception $e) {
+            return $e;
         }
         return $files;
     }
 
+    public function updateReference($fileUid, $parentUid, $referenceUid = 0) {
+        $fileRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\FileRepository::class);
+        $references = $this->getFileReferences($fileUid);
+
+        $somethingWentWrong = false;
+        foreach($references as $reference) {
+            if ($referenceUid !== 0) {
+                if ($referenceUid !== $reference->getUid()) {
+                    continue;
+                }
+            }
+            $foundFileReference = $fileRepository->findFileReferenceByUid($reference->getUid());
+            $foreign_id = $foundFileReference->getProperty('uid_foreign');
+            if (!$this->addFileReference($parentUid, $foreign_id)) {
+                $somethingWentWrong = true;
+                break;
+            }
+        }
+
+        if(!$somethingWentWrong) {
+            $resourceFactory = ResourceFactory::getInstance();
+            $storage = $resourceFactory->getDefaultStorage();
+            $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
+            $file = $repo->findByUid($fileUid);
+            $storage->deleteFile($file);
+        }
+    }
+
+    private function addFileReference($file, $content) {
+        $resourceFactory = ResourceFactory::getInstance();
+        try {
+            $fileObject = $resourceFactory->getFileObject((int)$file);
+            $contentElement = BackendUtility::getRecord('tt_content', (int)$content);
+            $newId = 'NEW1234';
+            $data = array();
+            $data['sys_file_reference'][$newId] = array(
+                'table_local' => 'sys_file',
+                'uid_local' => $fileObject->getUid(),
+                'tablenames' => 'tt_content',
+                'uid_foreign' => $contentElement['uid'],
+                'fieldname' => 'image',
+                'pid' => $contentElement['pid']
+            );
+            $data['tt_content'][$contentElement['uid']] = array(
+                'image' => $newId
+            );
+
+            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            $dataHandler->start($data, array());
+            $dataHandler->process_datamap();
+            return count($dataHandler->errorLog) === 0;
+        } catch (FileDoesNotExistException $e) {
+            return false;
+        }
+    }
+
     public function delete($uid) {
         foreach($this->getAllEntries($uid) as $file) {
-            $this->remove($file);
+            try {
+                $this->remove($file);
+            } catch (IllegalObjectTypeException $e) {
+                continue;
+            }
         }
     }
 
     public function save($obj) {
-        $this->update($obj);
-        $this->persistenceManager->persistAll();
+        try {
+            $this->update($obj);
+            $this->persistenceManager->persistAll();
+        } catch (IllegalObjectTypeException $e) {
+            return $e;
+        } catch (UnknownObjectException $e) {
+            return $e;
+        }
+        return null;
     }
     
     public function getFileReferences($fileUid=0) {
@@ -68,7 +148,7 @@ class FileRepository extends Repository {
         return $result;
     }
     
-    public function getFilesAndReferences($request) {
+    public function getFilesAndReferences(Request $request) {
         $tmp = array();
 
         $files = $this->getAllEntries();
@@ -80,7 +160,7 @@ class FileRepository extends Repository {
     }
     
     public function saveMeta(FileMeta $fileMeta) {
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
         $metadata = $objectManager->get('TYPO3\CMS\Core\Resource\Index\MetaDataRepository');
 
         if($fileMeta->getParent()) {
@@ -111,7 +191,7 @@ class FileRepository extends Repository {
 
     
     
-    private function addFileMetaIfExists(&$array, &$i, $file, $request) {
+    private function addFileMetaIfExists(&$array, &$i, File $file, Request $request) {
         $base = str_replace("typo3/", "", $request->getBaseUri());
         if(Helper::url_exists($base . $file->getOriginalResource()->getPublicUrl())) {
             $parentParams = array();
@@ -141,7 +221,7 @@ class FileRepository extends Repository {
         $array[$i++] = $fileMeta;
     }
 
-    private function createFileMeta($file, $parent, $title, $alternative, $description, $identifier) {
+    private function createFileMeta(File $file, $parent, $title, $alternative, $description, $identifier) {
         $fileMeta = new FileMeta();
         $fileMeta->setUid($file->getUid());
         $fileMeta->setIdentifier($identifier);
@@ -152,7 +232,7 @@ class FileRepository extends Repository {
         return $fileMeta;
     }
 
-    private function execQuery($fileMeta) {
+    private function execQuery(FileMeta $fileMeta) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $queryBuilder->update('sys_file_reference')
             ->where(
@@ -164,7 +244,7 @@ class FileRepository extends Repository {
             ->execute();
     }
 
-    private function setParentParam($file, $descr) {
+    private function setParentParam(File $file, $descr) {
         if($file->getOriginalResource()->_getMetaData()[$descr]!=null) {
             return $file->getOriginalResource()->_getMetaData()[$descr];
         } else {
@@ -172,19 +252,16 @@ class FileRepository extends Repository {
         }
     }
     
-    private function setParams($descr, $repo, $parentUid) {
-        try {
-            $obj = $repo->findFileReferenceByUid($parentUid);
-            if($obj!=null) {
-                $properties = $obj->getProperties();
-                if ($properties[$descr] == "") {
-                    return "";
-                } else {
-                    return $properties[$descr];
-                }
+    private function setParams($descr, \TYPO3\CMS\Core\Resource\FileRepository $repo, $parentUid) {
+        $obj = $repo->findFileReferenceByUid($parentUid);
+        if($obj!=null) {
+            $properties = $obj->getProperties();
+            if ($properties[$descr] == "") {
+                return "";
+            } else {
+                return $properties[$descr];
             }
-        } catch (Exception $ex) {
-            return $ex;
         }
+        return null;
     }
 }

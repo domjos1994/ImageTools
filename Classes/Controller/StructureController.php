@@ -2,6 +2,8 @@
 
 namespace DominicJoas\DjImagetools\Controller;
 
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -60,10 +62,11 @@ class StructureController extends ActionController {
      * @throws
      */
     public function deleteAction($uid, $parent, $identifier) {
-        $this->fileRepository->delete($uid);
         $comparableFile = new ComparableFile();
         $comparableFile->setUid($parent);
         $comparableFile->setIdentifier($identifier);
+        $this->fileRepository->updateReference($uid, $parent);
+
         $this->redirect('list');
     }
 
