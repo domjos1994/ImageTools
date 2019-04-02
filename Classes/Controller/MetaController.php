@@ -24,6 +24,9 @@ class MetaController extends ActionController {
     }
 
     public function listAction() {
+        Helper::saveSettings("oldController", Helper::getSettings("lastActionMenuItem"));
+        Helper::saveSettings("lastActionMenuItem", "Meta");
+
         $files = $this->fileRepository->getFilesAndReferences($this->request);
         $this->view->assign('files', $files);
         $this->view->assign('path', Helper::getFolIdent());

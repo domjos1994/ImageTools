@@ -23,6 +23,23 @@ class FileController extends ActionController {
      */
     protected $configurationManager;
 
+    /**
+     * Redirect to the saved menu item
+     * @throws
+     */
+    protected function initializeAction() {
+        $lastActionMenuItem = Helper::getSettings('lastActionMenuItem');
+        $oldController = Helper::getSettings('oldController');
+
+        if($lastActionMenuItem!=$oldController) {
+            if ($lastActionMenuItem) {
+
+                Helper::saveSettings('lastActionMenuItem', "");
+                //$this->redirect("list", $lastActionMenuItem);
+            }
+        }
+    }
+
     public function injectFileRepository(FileRepository $fileRepository) {
         $this->fileRepository = $fileRepository;
     }
@@ -39,12 +56,15 @@ class FileController extends ActionController {
         parent::initializeView($view);
 
         // include tinify-library
-        Helper::includeLibTinify($this->settings['tinifyKey']);
+        Helper::includeLibTinify(Helper::getSettings('tinifyKey'));
     }
 
     public function listAction() {
-        if ($this->settings['tinifyKey'] == NULL || $this->settings['tinifyKey'] == "key") {
-            $this->addFlashMessage("No Tinify-Key was found in the configuration!", "No Key", Helper::getMessageType("error"), false);
+        Helper::saveSettings("oldController", Helper::getSettings("lastActionMenuItem"));
+        Helper::saveSettings("lastActionMenuItem", "File");
+
+        if (Helper::getSettings('tinifyKey') == NULL || Helper::getSettings('tinifyKey') == "key") {
+            $this->addFlashMessage(Helper::getLang("compressImages.noTinifyKey.content"), Helper::getLang("compressImages.noTinifyKey.header"),  Helper::getMessageType("error"), false);
         }
 
         $files = $this->fileRepository->getAllEntries(0, true);

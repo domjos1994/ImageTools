@@ -3,6 +3,8 @@ namespace DominicJoas\DjImagetools\Utility;
 
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class Helper {
     
@@ -71,7 +73,24 @@ class Helper {
         $file->setTxDjImagetoolsCompressed(1);
         $fileRepository->save($file);
     }
-    
+
+    public static function getLang($key) {
+        return LocalizationUtility::translate("LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:" . $key, "imagetools_module1", array());
+    }
+
+    public static function saveSettings($key, $value) {
+        $GLOBALS['BE_USER']->uc['tx_imagetools_module1'][$key] = $value;
+        $GLOBALS['BE_USER']->writeUC();
+    }
+
+    public static function getSettings($key = "") {
+        if($key=="") {
+            return $GLOBALS['BE_USER']->uc['tx_imagetools_module1'];
+        } else {
+            return $GLOBALS['BE_USER']->uc['tx_imagetools_module1'][$key];
+        }
+    }
+
     /**
      * 
      * @param type $storage

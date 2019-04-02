@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
+    <f:be.container includeCssFiles="{0: '{f:uri.resource(path:\'Css/style.css\')}'}" includeJsFiles="{0: '{f:uri.resource(path:\'Js/script.js\')}'}">
+        <f:render partial="Module_Header" arguments="{template: 'file', path:path}"/>
+        <div class="tx_dj_imagetools module-body t3js-module-body">
+            <f:be.infobox title="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.settings')}"/>
+            <f:flashMessages />
+
+            <f:form controller="Settings" action="update" name="settings" object="{settings}">
+                <div class="row">
+                    <div class="form-group t3js-formengine-validation-marker t3js-formengine-palette-field col-md-12">
+                        <label class="t3js-formengine-label">
+                            Tinify-Key
+                        </label>
+                        <f:form.textfield class='form-control'  property="tinifyKey" value="{settings.tinifyKey}"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="btn-group col-md-12">
+                        <f:form.button type='submit' class="btn btn-primary" value="">
+                            <i class='fa fa-save'></i>
+                        </f:form.button>
+                    </div>
+                </div>
+            </f:form>
+        </div>
+    </f:be.container>
+</html>

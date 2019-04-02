@@ -2,8 +2,6 @@
 
 namespace DominicJoas\DjImagetools\Controller;
 
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -28,6 +26,9 @@ class StructureController extends ActionController {
     }
     
     public function listAction(ComparableFile $selectedfile = NULL) {
+        Helper::saveSettings("oldController", Helper::getSettings("lastActionMenuItem"));
+        Helper::saveSettings("lastActionMenuItem", "Structure");
+
 
         $i = 0;
         foreach($this->listExistingFiles() as $file) {

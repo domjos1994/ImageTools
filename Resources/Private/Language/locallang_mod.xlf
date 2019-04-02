@@ -15,6 +15,9 @@
             <trans-unit id="mlang_tabs_tab.structure" xml:space="preserve">
                 <source>Structure</source>
             </trans-unit>
+            <trans-unit id="mlang_tabs_tab.settings" xml:space="preserve">
+                <source>Settings</source>
+            </trans-unit>
             
             <trans-unit id="compressImages" xml:space="preserve">
                 <source>Compress with Tinify</source>
@@ -42,6 +45,12 @@
             </trans-unit>
             <trans-unit id="compressImages.alreadyCompressed" xml:space="preserve">
                 <source>Already compressed</source>
+            </trans-unit>
+            <trans-unit id="compressImages.noTinifyKey.header" xml:space="preserve">
+                <source>No Key</source>
+            </trans-unit>
+            <trans-unit id="compressImages.noTinifyKey.content" xml:space="preserve">
+                <source>No Tinify-Key was found in the configuration! Visit https://tinypng.com/developers and get your API-Key!</source>
             </trans-unit>
             
             <trans-unit id="metaData" xml:space="preserve">
