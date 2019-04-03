@@ -1,6 +1,7 @@
 <?php
 namespace DominicJoas\DjImagetools\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
@@ -30,13 +31,14 @@ class FileController extends ActionController {
     protected function initializeAction() {
         $lastActionMenuItem = Helper::getSettings('lastActionMenuItem');
 
-        if ($GLOBALS["_GET"]["id"] != Helper::getSettings("lastPath")) {
+        $file = GeneralUtility::_GET("tx_djimagetools_file_djimagetoolstximagetoolsmodule1");
+        if($file==null) {
             if ($lastActionMenuItem) {
                 Helper::saveSettings('lastActionMenuItem', "");
                 $this->redirect("list", $lastActionMenuItem);
             }
         }
-}
+    }
 
     public function injectFileRepository(FileRepository $fileRepository) {
         $this->fileRepository = $fileRepository;

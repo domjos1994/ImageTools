@@ -20,7 +20,6 @@ class MetaController extends ActionController {
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
         parent::injectConfigurationManager($configurationManager);
         $this->configurationManager = $configurationManager;
-        $tsSettings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1");
     }
 
     public function listAction() {
