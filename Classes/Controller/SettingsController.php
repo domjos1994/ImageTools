@@ -8,7 +8,7 @@ use DominicJoas\DjImagetools\Utility\Helper;
 class SettingsController extends ActionController {
 
     public function listAction() {
-        Helper::saveSettings("oldController", Helper::getSettings("lastActionMenuItem"));
+        Helper::saveSettings("lastPath", $GLOBALS["_GET"]["id"]);
         Helper::saveSettings("lastActionMenuItem", "Settings");
 
         $settings = array();

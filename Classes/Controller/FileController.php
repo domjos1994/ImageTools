@@ -29,16 +29,14 @@ class FileController extends ActionController {
      */
     protected function initializeAction() {
         $lastActionMenuItem = Helper::getSettings('lastActionMenuItem');
-        $oldController = Helper::getSettings('oldController');
 
-        if($lastActionMenuItem!=$oldController) {
+        if ($GLOBALS["_GET"]["id"] != Helper::getSettings("lastPath")) {
             if ($lastActionMenuItem) {
-
                 Helper::saveSettings('lastActionMenuItem', "");
-                //$this->redirect("list", $lastActionMenuItem);
+                $this->redirect("list", $lastActionMenuItem);
             }
         }
-    }
+}
 
     public function injectFileRepository(FileRepository $fileRepository) {
         $this->fileRepository = $fileRepository;
@@ -60,7 +58,7 @@ class FileController extends ActionController {
     }
 
     public function listAction() {
-        Helper::saveSettings("oldController", Helper::getSettings("lastActionMenuItem"));
+        Helper::saveSettings("lastPath", $GLOBALS["_GET"]["id"]);
         Helper::saveSettings("lastActionMenuItem", "File");
 
         if (Helper::getSettings('tinifyKey') == NULL || Helper::getSettings('tinifyKey') == "key") {

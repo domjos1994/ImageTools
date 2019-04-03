@@ -26,7 +26,7 @@ class StructureController extends ActionController {
     }
     
     public function listAction(ComparableFile $selectedfile = NULL) {
-        Helper::saveSettings("oldController", Helper::getSettings("lastActionMenuItem"));
+        Helper::saveSettings("lastPath", $GLOBALS["_GET"]["id"]);
         Helper::saveSettings("lastActionMenuItem", "Structure");
 
 
