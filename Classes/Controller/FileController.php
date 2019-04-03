@@ -68,7 +68,7 @@ class FileController extends ActionController {
         }
 
         $files = $this->fileRepository->getAllEntries(0, true);
-        $base = str_replace("typo3/", "", $this->request->getBaseUri());
+        $base = substr($this->request->getBaseUri(), 0, strrpos($this->request->getBaseUri(), "typo3/"));
         $existingFiles = array();
         $i = 0;
         foreach ($files as $file) {

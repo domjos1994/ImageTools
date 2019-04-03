@@ -153,7 +153,7 @@ class FileRepository extends Repository {
 
         $files = $this->getAllEntries();
         $i = 0;
-        foreach($files as $file) {            
+        foreach($files as $file) {
             $this->addFileMetaIfExists($tmp, $i, $file, $request);
         }
         return $tmp;
@@ -192,7 +192,7 @@ class FileRepository extends Repository {
     
     
     private function addFileMetaIfExists(&$array, &$i, File $file, Request $request) {
-        $base = str_replace("typo3/", "", $request->getBaseUri());
+        $base = substr($request->getBaseUri(), 0, strrpos($request->getBaseUri(), "typo3/"));
         if(Helper::url_exists($base . $file->getOriginalResource()->getPublicUrl())) {
             $parentParams = array();
             $parentUid = $file->getUid();
