@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2017-11-27T17:38:32Z" product-name="dj_imagetools">
+        <header/>
+        <body>
+            <trans-unit id="file.alttitle">
+                <source>Compress and resize images with TinyPng</source>
+            </trans-unit>
+            <trans-unit id="file.description">
+                <source>Here you can compress images with the TinyPng-Service. You can also add a width or/and a height to resize the images. There are some Settings in the Settings-Screen! To use the TinyPNG-Service you need to generate a free or commercial API-Key!</source>
+            </trans-unit>
+            <trans-unit id="meta.alttitle">
+                <source>Optimize the Meta-Data of images</source>
+            </trans-unit>
+            <trans-unit id="meta.description">
+                <source>Here you can see an overview over the images the Meta-Data and the Meta-Data of the Images used in the Content-Elements!</source>
+            </trans-unit>
+            <trans-unit id="structure.alttitle">
+                <source>Compare images and change structure</source>
+            </trans-unit>
+            <trans-unit id="structure.description">
+                <source>Compares images with the help of imagick and shows how different the images are.</source>
+            </trans-unit>
+            <trans-unit id="settings.alttitle">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="settings.description">
+                <source>Here are the settings for the screen!</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

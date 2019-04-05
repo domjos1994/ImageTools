@@ -48,7 +48,6 @@ class StructureController extends ActionController {
             $comparables[$i++] = $comparableFile;
         }
 
-        var_dump(get_loaded_extensions());
         if(!extension_loaded("imagick")) {
             Helper::addFlashMessage('error', 'noIMagick', $this);
         }
