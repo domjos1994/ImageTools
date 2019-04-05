@@ -5,107 +5,140 @@
         <body>  
             <trans-unit id="mlang_tabs_tab">
                 <source>Image-Tools</source>
+                <target>Bilder-Tools</target>
             </trans-unit>
             <trans-unit id="mlang_tabs_tab.compressImages">
                 <source>Compress images</source>
+                <target>Komprimiere Bilder</target>
             </trans-unit>
             <trans-unit id="mlang_tabs_tab.metaData">
                 <source>Meta-Data</source>
+                <target>Meta-Daten</target>
             </trans-unit>
             <trans-unit id="mlang_tabs_tab.structure">
                 <source>Structure</source>
+                <target>Struktur</target>
             </trans-unit>
             <trans-unit id="mlang_tabs_tab.settings">
                 <source>Settings</source>
+                <target>Einstellungen</target>
             </trans-unit>
             
             <trans-unit id="compressImages">
                 <source>Compress with Tinify</source>
+                <target>Komprimiere mit Tinify</target>
             </trans-unit>
             <trans-unit id="compressImages.undo">
                 <source>Show Images again</source>
+                <target>Bilder wieder anzeigen</target>
             </trans-unit>
             <trans-unit id="compressImages.file-name">
                 <source>File-Name</source>
+                <target>Datei-Name</target>
             </trans-unit>
             <trans-unit id="compressImages.compressed">
                 <source>Compress</source>
+                <target>Komprimiere</target>
             </trans-unit>
             <trans-unit id="compressImages.width">
                 <source>Width</source>
+                <target>Breite</target>
             </trans-unit>
             <trans-unit id="compressImages.height">
                 <source>Height</source>
+                <target>Höhe</target>
             </trans-unit>
             <trans-unit id="compressImages.progress">
                 <source>Progress</source>
+                <target>Prozess</target>
             </trans-unit>
             <trans-unit id="compressImages.compressAll">
                 <source>Compress all</source>
+                <target>Alles komprimieren</target>
             </trans-unit>
             <trans-unit id="compressImages.alreadyCompressed">
                 <source>Already compressed</source>
+                <target>Bereits komprimiert</target>
             </trans-unit>
 
             <trans-unit id="metaData.parent">
                 <source>Parent</source>
+                <target>Eltern</target>
             </trans-unit>
             <trans-unit id="metaData.reference">
                 <source>Reference</source>
+                <target>Referenz</target>
             </trans-unit>
             <trans-unit id="metaData.updateReferences">
                 <source>Update references</source>
+                <target>Referenz aktualisieren</target>
             </trans-unit>
             <trans-unit id="metaData.title">
                 <source>Title</source>
+                <target>Titel</target>
             </trans-unit>
             <trans-unit id="metaData.alternative">
                 <source>Alternative</source>
+                <target>Alternativer Titel</target>
             </trans-unit>
             <trans-unit id="metaData.description">
                 <source>Description</source>
+                <target>Beschreibung</target>
             </trans-unit>
             <trans-unit id="metaData.change">
                 <source>Change</source>
+                <target>Ändern</target>
             </trans-unit>
 
             <trans-unit id="structure.difference">
                 <source>Difference</source>
+                <target>Differenz</target>
             </trans-unit>
 
             <trans-unit id="settings.tinifyKey">
                 <source><![CDATA[Tinify-Key (Visit <a href="https://tinypng.com/developers" target="_blank" title="Zu TinyPNG-API">TinyPng</a> and get your API-Key!)]]></source>
+                <target><![CDATA[Tinify-Schlüssel (Besuche <a href="https://tinypng.com/developers" target="_blank" title="Zu TinyPNG-API">TinyPng</a> und generiere den API-Schlüssel!)]]></target>
             </trans-unit>
             <trans-unit id="settings.widthForAll">
                 <source>Default-Width for all images!</source>
+                <target>Standard-Breite für alle Bilder!</target>
             </trans-unit>
             <trans-unit id="settings.heightForAll">
                 <source>Default-Height for all images!</source>
+                <target>Standard-Höhe für alle Bilder!</target>
             </trans-unit>
             <trans-unit id="settings.overwrite">
                 <source>Overwrite images!</source>
+                <target>Überschreibe Bilder</target>
             </trans-unit>
             <trans-unit id="settings.sameFolder">
                 <source>Same folder as uncompressed images!</source>
+                <target>Gleicher Ordner als unkomprimierte Bilder!</target>
             </trans-unit>
             <trans-unit id="settings.uploadFolder">
                 <source>Use other folder (relative path)!</source>
+                <target>Benutzer anderen Ordner (Relativer Pfad)!</target>
             </trans-unit>
             <trans-unit id="settings.saved">
                 <source>Settings saved successfully!</source>
+                <target>Einstellungen wurden erfolgreich gespeichert!</target>
             </trans-unit>
 
             <trans-unit id="messages.error.noKey.title">
                 <source>No Key</source>
+                <target>Kein Schlüssel</target>
             </trans-unit>
             <trans-unit id="messages.error.noKey.content">
                 <source>No Tinify-Key was found in the configuration! Go to Settings and change it!</source>
+                <target>Es wurde kein Tinify-Schlüssel in den Einstellungen gefunden! Schlüssel in den Einstellungen bitte angeben</target>
             </trans-unit>
             <trans-unit id="messages.error.noIMagick.title">
                 <source>No IMagick-Library configured!</source>
+                <target>IMagick-Bibliothek nicht gefunden!</target>
             </trans-unit>
             <trans-unit id="messages.error.noIMagick.content">
                 <source>The PHP-Module IMagick needs to be loaded!</source>
+                <target>Das PHP-Modul IMagick wurde nicht geladen!</target>
             </trans-unit>
         </body>
     </file>
