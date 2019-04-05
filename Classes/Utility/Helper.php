@@ -4,6 +4,7 @@ namespace DominicJoas\DjImagetools\Utility;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class Helper {
@@ -91,6 +92,14 @@ class Helper {
         }
     }
 
+    public static function getBase(Request $request) {
+        return substr($request->getBaseUri(), 0, strrpos($request->getBaseUri(), "typo3/"));
+    }
+
+    public static function addFlashMessage($type, $key, ActionController $controller) {
+        $controller->addFlashMessage(Helper::getLang('messages.' . $type . '.' . $key . '.content'), Helper::getLang('messages.' . $type . '.' . $key . '.title'), Helper::getMessageType($type));
+    }
+
     /**
      * 
      * @param type $storage
@@ -110,7 +119,5 @@ class Helper {
         }
         return $identifier;
     }
-
-
 }
 

@@ -22,12 +22,19 @@ td.image.show img {
 }
 
 .loader {
-    border: 0.3em solid #f3f3f3; /* Light grey */
-    border-top: 0.3em solid #3498db; /* Blue */
+    border: 0.3em solid #f3f3f3;
+    border-top: 0.3em solid #3498db;
     border-radius: 50%;
     width: 3em;
     height: 3em;
     animation: spin 2s linear infinite;
+}
+
+.loaderHeader {
+    border: 0.3em solid #3498db;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
 }
 
 input.form-control.error,

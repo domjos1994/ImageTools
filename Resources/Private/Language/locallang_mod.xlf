@@ -3,88 +3,111 @@
     <file source-language="en" datatype="plaintext" original="messages" date="2017-11-27T17:38:32Z" product-name="dj_imagetools">
         <header/>
         <body>  
-            <trans-unit id="mlang_tabs_tab" xml:space="preserve">
+            <trans-unit id="mlang_tabs_tab">
                 <source>Image-Tools</source>
             </trans-unit>
-            <trans-unit id="mlang_tabs_tab.compressImages" xml:space="preserve">
+            <trans-unit id="mlang_tabs_tab.compressImages">
                 <source>Compress images</source>
             </trans-unit>
-            <trans-unit id="mlang_tabs_tab.metaData" xml:space="preserve">
+            <trans-unit id="mlang_tabs_tab.metaData">
                 <source>Meta-Data</source>
             </trans-unit>
-            <trans-unit id="mlang_tabs_tab.structure" xml:space="preserve">
+            <trans-unit id="mlang_tabs_tab.structure">
                 <source>Structure</source>
             </trans-unit>
-            <trans-unit id="mlang_tabs_tab.settings" xml:space="preserve">
+            <trans-unit id="mlang_tabs_tab.settings">
                 <source>Settings</source>
             </trans-unit>
             
-            <trans-unit id="compressImages" xml:space="preserve">
+            <trans-unit id="compressImages">
                 <source>Compress with Tinify</source>
             </trans-unit>
-            <trans-unit id="compressImages.undo" xml:space="preserve">
+            <trans-unit id="compressImages.undo">
                 <source>Show Images again</source>
             </trans-unit>
-            <trans-unit id="compressImages.file-name" xml:space="preserve">
+            <trans-unit id="compressImages.file-name">
                 <source>File-Name</source>
             </trans-unit>
-            <trans-unit id="compressImages.compressed" xml:space="preserve">
+            <trans-unit id="compressImages.compressed">
                 <source>Compress</source>
             </trans-unit>
-            <trans-unit id="compressImages.width" xml:space="preserve">
+            <trans-unit id="compressImages.width">
                 <source>Width</source>
             </trans-unit>
-            <trans-unit id="compressImages.height" xml:space="preserve">
+            <trans-unit id="compressImages.height">
                 <source>Height</source>
             </trans-unit>
-            <trans-unit id="compressImages.progress" xml:space="preserve">
+            <trans-unit id="compressImages.progress">
                 <source>Progress</source>
             </trans-unit>
-            <trans-unit id="compressImages.compressAll" xml:space="preserve">
+            <trans-unit id="compressImages.compressAll">
                 <source>Compress all</source>
             </trans-unit>
-            <trans-unit id="compressImages.alreadyCompressed" xml:space="preserve">
+            <trans-unit id="compressImages.alreadyCompressed">
                 <source>Already compressed</source>
             </trans-unit>
-            <trans-unit id="compressImages.noTinifyKey.header" xml:space="preserve">
-                <source>No Key</source>
-            </trans-unit>
-            <trans-unit id="compressImages.noTinifyKey.content" xml:space="preserve">
-                <source>No Tinify-Key was found in the configuration! Visit https://tinypng.com/developers and get your API-Key!</source>
-            </trans-unit>
-            
-            <trans-unit id="metaData" xml:space="preserve">
-                <source>Optimize the Meta-Data of images</source>
-            </trans-unit>
-            <trans-unit id="metaData.parent" xml:space="preserve">
+
+            <trans-unit id="metaData.parent">
                 <source>Parent</source>
             </trans-unit>
-            <trans-unit id="metaData.reference" xml:space="preserve">
+            <trans-unit id="metaData.reference">
                 <source>Reference</source>
             </trans-unit>
-            <trans-unit id="metaData.updateReferences" xml:space="preserve">
+            <trans-unit id="metaData.updateReferences">
                 <source>Update references</source>
             </trans-unit>
-            <trans-unit id="metaData.title" xml:space="preserve">
+            <trans-unit id="metaData.title">
                 <source>Title</source>
             </trans-unit>
-            <trans-unit id="metaData.alternative" xml:space="preserve">
+            <trans-unit id="metaData.alternative">
                 <source>Alternative</source>
             </trans-unit>
-            <trans-unit id="metaData.description" xml:space="preserve">
+            <trans-unit id="metaData.description">
                 <source>Description</source>
             </trans-unit>
-            <trans-unit id="metaData.change" xml:space="preserve">
+            <trans-unit id="metaData.change">
                 <source>Change</source>
             </trans-unit>
-            
-            <trans-unit id="structure" xml:space="preserve">
-                <source>Compare images and change structure</source>
-            </trans-unit>
-            <trans-unit id="structure.difference" xml:space="preserve">
+
+            <trans-unit id="structure.difference">
                 <source>Difference</source>
             </trans-unit>
-            <trans-unit id="structure.imagick.notLoaded" xml:space="preserve">
+            <trans-unit id="structure.imagick.notLoaded">
+                <source>The PHP-Module IMagick needs to be loaded!</source>
+            </trans-unit>
+
+            <trans-unit id="settings.tinifyKey">
+                <source><![CDATA[Tinify-Key (Visit <a href="https://tinypng.com/developers" target="_blank" title="Zu TinyPNG-API">TinyPng</a> and get your API-Key!)]]></source>
+            </trans-unit>
+            <trans-unit id="settings.widthForAll">
+                <source>Default-Width for all images!</source>
+            </trans-unit>
+            <trans-unit id="settings.heightForAll">
+                <source>Default-Height for all images!</source>
+            </trans-unit>
+            <trans-unit id="settings.overwrite">
+                <source>Overwrite images!</source>
+            </trans-unit>
+            <trans-unit id="settings.sameFolder">
+                <source>Same folder as uncompressed images!</source>
+            </trans-unit>
+            <trans-unit id="settings.uploadFolder">
+                <source>Use other folder (relative path)!</source>
+            </trans-unit>
+            <trans-unit id="settings.saved">
+                <source>Settings saved successfully!</source>
+            </trans-unit>
+
+            <trans-unit id="messages.error.noKey.title">
+                <source>No Key</source>
+            </trans-unit>
+            <trans-unit id="messages.error.noKey.content">
+                <source>No Tinify-Key was found in the configuration! Go to Settings and change it!</source>
+            </trans-unit>
+            <trans-unit id="messages.error.noIMagick.title">
+                <source>No IMagick-Library configured!</source>
+            </trans-unit>
+            <trans-unit id="messages.error.noIMagick.content">
                 <source>The PHP-Module IMagick needs to be loaded!</source>
             </trans-unit>
         </body>

@@ -26,7 +26,6 @@ class StructureController extends ActionController {
     }
     
     public function listAction(ComparableFile $selectedfile = NULL) {
-        Helper::saveSettings("lastPath", $GLOBALS["_GET"]["id"]);
         Helper::saveSettings("lastActionMenuItem", "Structure");
 
 
@@ -48,8 +47,11 @@ class StructureController extends ActionController {
             $comparableFile->setComparableFiles($images);
             $comparables[$i++] = $comparableFile;
         }
-        
-        $this->view->assign("imagick", extension_loaded("imagick"));
+
+        var_dump(get_loaded_extensions());
+        if(!extension_loaded("imagick")) {
+            Helper::addFlashMessage('error', 'noIMagick', $this);
+        }
         $this->view->assign('files', $comparables);
         $this->view->assign('selected', $selectedfile);
         $this->view->assign('path', Helper::getFolIdent());
@@ -96,7 +98,7 @@ class StructureController extends ActionController {
     }
 
     private function listExistingFiles() {
-        $this->base = str_replace("typo3/", "", $this->request->getBaseUri());
+        $this->base = Helper::getBase($this->request);
         $files = $this->fileRepository->getAllEntries();
         $existingFiles = array();
         $i = 0;

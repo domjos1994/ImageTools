@@ -23,7 +23,6 @@ class MetaController extends ActionController {
     }
 
     public function listAction() {
-        Helper::saveSettings("lastPath", $GLOBALS["_GET"]["id"]);
         Helper::saveSettings("lastActionMenuItem", "Meta");
 
         $files = $this->fileRepository->getFilesAndReferences($this->request);

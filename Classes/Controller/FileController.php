@@ -1,6 +1,7 @@
 <?php
 namespace DominicJoas\DjImagetools\Controller;
 
+use function Tinify\fromBuffer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -12,15 +13,14 @@ use DominicJoas\DjImagetools\Domain\Model\File;
 use DominicJoas\DjImagetools\Utility\Helper;
 
 class FileController extends ActionController {
-    protected $settings;
 
     /**
-     * @var \DominicJoas\DjImagetools\Domain\Repository\FileRepository
+     * @var FileRepository
      */
     private $fileRepository;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
@@ -47,9 +47,6 @@ class FileController extends ActionController {
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
         parent::injectConfigurationManager($configurationManager);
         $this->configurationManager = $configurationManager;
-        
-        // load user-settings from static template
-        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, "imagetools_module1")['settings'];
     }
 
     protected function initializeView(ViewInterface $view) {
@@ -60,15 +57,14 @@ class FileController extends ActionController {
     }
 
     public function listAction() {
-        Helper::saveSettings("lastPath", $GLOBALS["_GET"]["id"]);
         Helper::saveSettings("lastActionMenuItem", "File");
 
         if (Helper::getSettings('tinifyKey') == NULL || Helper::getSettings('tinifyKey') == "key") {
-            $this->addFlashMessage(Helper::getLang("compressImages.noTinifyKey.content"), Helper::getLang("compressImages.noTinifyKey.header"),  Helper::getMessageType("error"), false);
+            Helper::addFlashMessage('error', 'noKey', $this);
         }
 
         $files = $this->fileRepository->getAllEntries(0, true);
-        $base = substr($this->request->getBaseUri(), 0, strrpos($this->request->getBaseUri(), "typo3/"));
+        $base = Helper::getBase($this->request);
         $existingFiles = array();
         $i = 0;
         foreach ($files as $file) {
@@ -80,8 +76,8 @@ class FileController extends ActionController {
         
         $this->view->assign('path', Helper::getFolIdent());
         $this->view->assign('files', $existingFiles);
-        $this->view->assign('width', $this->settings['widthForAll']);
-        $this->view->assign('height', $this->settings['heightForAll']);
+        $this->view->assign('width', Helper::getSettings('widthForAll'));
+        $this->view->assign('height', Helper::getSettings('heightForAll'));
         return $this->view->render();
     }
     
@@ -90,13 +86,13 @@ class FileController extends ActionController {
         
         $height = $file->getTxDjImagetoolsHeight();
         $width = $file->getTxDjImagetoolsWidth();
-        $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
+        $tinifySource = fromBuffer($file->getOriginalResource()->getContents());
         
         $tmp = $this->fileRepository->getAllEntries($file->getUid(), true);
         $file->setOriginalResource($tmp[0]->getOriginalResource());
         
         $source = $this->setSource($height, $width, $tinifySource);
-        Helper::saveFile($file, $source, $this->settings, $this->fileRepository);
+        Helper::saveFile($file, $source, Helper::getSettings(), $this->fileRepository);
        
         $this->redirect("list");
     }
@@ -124,13 +120,13 @@ class FileController extends ActionController {
 
                 $height = $file->getTxDjImagetoolsHeight();
                 $width = $file->getTxDjImagetoolsWidth();
-                $tinifySource = \Tinify\fromBuffer($file->getOriginalResource()->getContents());
+                $tinifySource = fromBuffer($file->getOriginalResource()->getContents());
 
                 $tmp = $this->fileRepository->getAllEntries($file->getUid(), true);
                 $file->setOriginalResource($tmp[0]->getOriginalResource());
 
                 $source = $this->setSource($height, $width, $tinifySource);
-                Helper::saveFile($file, $source, $this->settings, $this->fileRepository);
+                Helper::saveFile($file, $source, Helper::getSettings(), $this->fileRepository);
             }
         }
         $this->redirect("list");
@@ -165,10 +161,10 @@ class FileController extends ActionController {
         if(($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) || $all) {
             $file->setTxDjImagetoolsWidth(-1);
             $file->setTxDjImagetoolsHeight(-1);
-            if($this->settings['widthForAll']==NULL || $this->settings['widthForAll']==-1) {
-                $file->setTxDjImagetoolsHeight(intval($this->settings['heightForAll']));
+            if(Helper::getSettings('widthForAll')==NULL || Helper::getSettings('widthForAll')==-1) {
+                $file->setTxDjImagetoolsHeight(intval(Helper::getSettings('heightForAll')));
             } else {
-                $file->setTxDjImagetoolsWidth(intval($this->settings['widthForAll']));
+                $file->setTxDjImagetoolsWidth(intval(Helper::getSettings('widthForAll')));
             }
         } else if($file->getTxDjImagetoolsWidth()==NULL) {
             $file->setTxDjImagetoolsWidth(-1);

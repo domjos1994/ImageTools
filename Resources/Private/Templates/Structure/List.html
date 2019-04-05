@@ -2,69 +2,60 @@
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
       onload="changeColorOfRow()">
     <f:be.container includeCssFiles="{0: '{f:uri.resource(path:\'Css/style.css\')}'}" includeJsFiles="{0: '{f:uri.resource(path:\'Js/script.js\')}'}">
-        <f:render partial="Module_Header" arguments="{template: 'structure', path:path}"/>
+        <f:render partial="Module_Header" arguments="{template: 'structure', path:path, cshField:'structure'}"/>
         <div class="tx_dj_imagetools module-body t3js-module-body">
-            <f:be.infobox title="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.structure')}"><h2><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure"/></h2></f:be.infobox>
+            <h1><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.structure"/></h1>
             <f:flashMessages />
-            <f:if condition="{imagick}">
-                <f:then>
-                    <table border="1" class="table table-striped table-hover">
-                        <thead>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.reference"/></th>
+                        <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.difference"/></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <f:for each="{files}" as="file" iteration="objIterator">
+                        <f:form controller="Structure" action="list" name="selectedfile" object="{file}">
                             <tr>
-                                <th></th>
-                                <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData.reference"/></th>
-                                <th><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.difference"/></th>
-                                <th></th>
+                                <f:form.hidden property='identifier' value='{file.identifier}'/>
+                                <f:form.hidden property='uid' value='{file.uid}'/>
+                                <td>
+                                    <div class="btn-group col-md-12">
+                                        <f:form.button type="submit" class="btn btn-primary" onclick="toggleLoader({file.uid})">
+                                            <i class='fa fa-folder-open'></i>
+                                        </f:form.button>
+                                        <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
+                                    </div>
+                                </td>
+                                <td>{file.identifier}</td>
+                                <td></td>
+                                <td><div id="loader{file.uid}"></div></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <f:for each="{files}" as="file" iteration="objIterator">
-                                <f:form controller="Structure" action="list" name="selectedfile" object="{file}">
-                                    <tr>
-                                        <f:form.hidden property='identifier' value='{file.identifier}'/>
-                                        <f:form.hidden property='uid' value='{file.uid}'/>
-                                        <td>
-                                            <div class="btn-group col-md-12">
-                                                <f:form.button type="submit" class="btn btn-primary" onclick="toggleLoader({file.uid})">
-                                                    <i class='fa fa-folder-open'></i>
-                                                </f:form.button>
-                                                <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
-                                            </div>
-                                        </td>
-                                        <td>{file.identifier}</td>
-                                        <td></td>
-                                        <td><div id="loader{file.uid}"></div></td>
-                                    </tr>
-                                    <f:for each="{file.comparableFiles}" as="comparableFile">
-                                        <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")} color{comparableFile.2}'>
-                                            <td>
-                                                <div class="btn-group col-md-12">
-                                                    <f:if condition="{comparableFile.2}<=10.0">
-                                                        <f:then>
-                                                            <f:link.action action="delete" class="btn btn-primary" onclick="toggleLoader({comparableFile.0})" arguments="{uid:comparableFile.0,parent:file.uid,identifier:file.identifier}"><i class="fa fa-remove"></i></f:link.action>
-                                                        </f:then>
-                                                    </f:if>
-                                                    <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
-                                                </div>
-                                            </td>
-                                            <td>{comparableFile.1}</td>
-                                            <td>{f:if(condition: "{comparableFile.2} == 0", then: "0", else: "{comparableFile.2}")} %</td>
-                                            <td>
-                                                <div id="loader{comparableFile.0}"></div>
-                                            </td>
-                                        </tr>
-                                    </f:for>
-                                </f:form>
+                            <f:for each="{file.comparableFiles}" as="comparableFile">
+                                <tr class='sub {f:if(condition: "{selected.uid} == {file.uid}", then: "show")} color{comparableFile.2}'>
+                                    <td>
+                                        <div class="btn-group col-md-12">
+                                            <f:if condition="{comparableFile.2}<=10.0">
+                                                <f:then>
+                                                    <f:link.action action="delete" class="btn btn-primary" onclick="toggleLoader({comparableFile.0})" arguments="{uid:comparableFile.0,parent:file.uid,identifier:file.identifier}"><i class="fa fa-remove"></i></f:link.action>
+                                                </f:then>
+                                            </f:if>
+                                            <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
+                                        </div>
+                                    </td>
+                                    <td>{comparableFile.1}</td>
+                                    <td>{f:if(condition: "{comparableFile.2} == 0", then: "0", else: "{comparableFile.2}")} %</td>
+                                    <td>
+                                        <div id="loader{comparableFile.0}"></div>
+                                    </td>
+                                </tr>
                             </f:for>
-                        </tbody>
-                    </table>
-                </f:then>
-                <f:else>
-                    <div class="alert alert-danger">
-                        <p><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:structure.imagick.notLoaded"/></p>
-                    </div>
-                </f:else>
-            </f:if>
+                        </f:form>
+                    </f:for>
+                </tbody>
+            </table>
         </div>
     </f:be.container>
 </html>

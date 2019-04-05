@@ -1,9 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
     <f:be.container includeCssFiles="{0: '{f:uri.resource(path:\'Css/style.css\')}'}" includeJsFiles="{0: '{f:uri.resource(path:\'Js/script.js\')}'}">
-        <f:render partial="Module_Header" arguments="{template: 'meta', path:path}"/>
+        <f:render partial="Module_Header" arguments="{template: 'meta', path:path, cshField:'meta'}"/>
         <div class="tx_dj_imagetools module-body t3js-module-body">
-            <f:be.infobox title="{f:translate(key: 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.metaData')}"><h2><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:metaData"/></h2></f:be.infobox>
+            <h1><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab.metaData"/></h1>
             <f:flashMessages />
             <table border="1" class="table table-striped table-hover">
                 <thead>

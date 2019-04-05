@@ -1,5 +1,8 @@
 <?php
-    if (!defined('TYPO3_MODE')) {
+
+use DominicJoas\DjImagetools\Task\CompressTask;
+
+if (!defined('TYPO3_MODE')) {
         die('Access denied.');
     }
 
@@ -7,9 +10,9 @@
         'className' => 'DominicJoas\DjImagetools\Domain\Model\File'
     );
     
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\DominicJoas\ImageTools\Task\CompressTask::class] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CompressTask::class] = [
         'extension' => 'dj_imagetools',
-        'title' => 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:imageTools',
+        'title' => 'LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:compressImages',
         'description' => 'Compress all images which aren\'t compressed!',
         'additionalFields' => '',
     ];
