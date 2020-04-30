@@ -9,9 +9,9 @@ $EM_CONF[$_EXTKEY] = array (
     'author_email' => 'developing@domjos.de',
     'state' => 'alpha',
     'clearCacheOnLoad' => true,
-    'version' => '0.0.2',
+    'version' => '0.0.3',
     'constraints' => array (
-        'depends' => array ('typo3' => '7.6.0-9.5.99',),
+        'depends' => array ('typo3' => '7.6.0-10.4.99',),
         'conflicts' => array (),
         'suggests' => array (),
     ),
