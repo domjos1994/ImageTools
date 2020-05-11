@@ -21,7 +21,13 @@ class Helper {
         
         return $messageType;
     }
-    
+
+    public static function log($data) {
+        echo '<script>';
+        echo 'console.log('. json_encode( $data ) .')';
+        echo '</script>';
+    }
+
     public static function includeLibTinify($tinifyKey) {
         $extPath = Helper::getExtPath();
         require_once($extPath . 'Resources/Private/PHP/lib/lib_tinify/Tinify/Exception.php');

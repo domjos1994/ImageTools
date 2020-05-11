@@ -82,6 +82,7 @@ class FileController extends ActionController {
     }
     
     public function updateAction(File $file) {
+        Helper::log($file);
         $this->changeSize($file);
         
         $height = $file->getTxDjImagetoolsHeight();

@@ -6,10 +6,12 @@ use DominicJoas\DjImagetools\Domain\Model\FileMeta;
 use DominicJoas\DjImagetools\Utility\Helper;
 use DominicJoas\DjImagetools\Domain\Model\File;
 
+use Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
-use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFileAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
@@ -19,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class FileRepository extends Repository {
-    
+
     public function getAllEntries($uid = 0, $unCompressed = false) {
         $extensions = array('png', 'jpg', 'JPG', 'PNG', 'jpeg');
         $folderIdentifier = $GLOBALS["_GET"]["id"];
@@ -30,8 +32,7 @@ class FileRepository extends Repository {
             if ($uid != 0) {
                 $files[0] = $this->findByUid($uid);
             } else {
-                $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
-
+                $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
                 if ($folderIdentifier == null) {
                     $folderIdentifier = $resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
                 }
@@ -40,19 +41,17 @@ class FileRepository extends Repository {
                 foreach ($tmpFiles as $tmp) {
                     if (in_array($tmp->getExtension(), $extensions)) {
                         if ($unCompressed) {
-                            $tmpFile = $this->findByUid($tmp->getUid());
-                            if ($tmpFile->getTxDjImagetoolsCompressed() != 1) {
-                                $files[$counter++] = $tmpFile;
+                            $tmpFile = $this->getFile($tmp->getUid());
+                            if ($tmpFile[0]->getTxDjImagetoolsCompressed() != 1) {
+                                $files[$counter++] = $tmpFile[0];
                             }
                         } else {
-                            $files[$counter++] = $this->findByUid($tmp->getUid());
+                            $files[$counter++] = $this->getFile($tmp->getUid())[0];
                         }
                     }
                 }
             }
-        } catch (InsufficientFolderAccessPermissionsException $e) {
-            return $e;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return $files;
@@ -82,7 +81,11 @@ class FileRepository extends Repository {
             $storage = $resourceFactory->getDefaultStorage();
             $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
             $file = $repo->findByUid($fileUid);
-            $storage->deleteFile($file);
+            try {
+                $storage->deleteFile($file);
+            } catch (FileOperationErrorException $e) {
+            } catch (InsufficientFileAccessPermissionsException $e) {
+            }
         }
     }
 
@@ -143,10 +146,19 @@ class FileRepository extends Repository {
         } else {
             $query->statement("SELECT * FROM sys_file_reference WHERE deleted=0 AND uid_local=$fileUid");
         }
-        $result = $query->execute();
-        return $result;
+        return $query->execute();
     }
-    
+
+    public function getFile($fileUid=0) {
+        $query = $this->createQuery();
+        if($fileUid==0) {
+            $query->statement("SELECT * FROM sys_file");
+        } else {
+            $query->statement("SELECT * FROM sys_file WHERE uid=$fileUid");
+        }
+        return $query->execute();
+    }
+
     public function getFilesAndReferences(Request $request) {
         $tmp = array();
 
