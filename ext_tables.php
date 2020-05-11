@@ -25,7 +25,7 @@ call_user_func(function($extKey) {
 
     $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
     $iconRegistry->registerIcon("imagetools-icon", SvgIconProvider::class, ['source' => 'EXT:dj_imagetools/Resources/Public/Icons/ImageTools.svg']);
-}, $_EXTKEY);
+}, "dj_imagetools");
 
 ExtensionManagementUtility::addLLrefForTCAdescr('xMOD_tx_dj_imagetools', 'EXT:dj_imagetools/Resources/Private/Language/locallang_csh.xlf');
 

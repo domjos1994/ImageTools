@@ -7,7 +7,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
     /**
      * Uid of file
      *
-     * @var integer
+     * @var int
      */
     protected $uid;
     
@@ -39,7 +39,7 @@ class File extends \TYPO3\CMS\Extbase\Domain\Model\File {
         $this->txDjImagetoolsWidth = -1;
     }
 
-    public function getUid() {
+    public function getUid(): ?int {
         return $this->uid;
     }
 
