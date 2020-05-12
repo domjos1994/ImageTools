@@ -1,6 +1,7 @@
 <?php
 namespace DominicJoas\DjImagetools\Controller;
 
+use Tinify\Exception;
 use function Tinify\fromBuffer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -31,11 +32,14 @@ class FileController extends ActionController {
     protected function initializeAction() {
         $lastActionMenuItem = Helper::getSettings('lastActionMenuItem');
 
-        $file = GeneralUtility::_GET("tx_djimagetools_file_djimagetoolstximagetoolsmodule1");
-        if($file==null) {
-            if ($lastActionMenuItem) {
-                Helper::saveSettings('lastActionMenuItem', "");
-                $this->redirect("list", $lastActionMenuItem);
+
+        if($this->arguments->hasArgument("file")) {
+            $file = $this->arguments->getArgument("file");
+            if($file==null) {
+                if ($lastActionMenuItem) {
+                    Helper::saveSettings('lastActionMenuItem', "");
+                    $this->redirect("list", $lastActionMenuItem);
+                }
             }
         }
     }
@@ -94,8 +98,8 @@ class FileController extends ActionController {
         
         $source = $this->setSource($height, $width, $tinifySource);
         Helper::saveFile($file, $source, Helper::getSettings(), $this->fileRepository);
-       
-        $this->redirect("list");
+
+        //$this->redirect("list");
     }
 
     public function disableEntryAction() {
@@ -159,6 +163,7 @@ class FileController extends ActionController {
     }
     
     private function changeSize(File &$file, $all = false) {
+        var_dump($file);
         if(($file->getTxDjImagetoolsWidth()==NULL && $file->getTxDjImagetoolsHeight()==NULL) || $all) {
             $file->setTxDjImagetoolsWidth(-1);
             $file->setTxDjImagetoolsHeight(-1);

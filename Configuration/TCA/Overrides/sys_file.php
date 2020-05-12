@@ -1,4 +1,7 @@
 <?php
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 defined('TYPO3_MODE') or die();
 
 $temporaryColumns = array(
@@ -28,8 +31,7 @@ $temporaryColumns = array(
     ),
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
-        'sys_file', $temporaryColumns
-);
+ExtensionManagementUtility::addTCAcolumns('sys_file', $temporaryColumns);
+ExtensionManagementUtility::addToAllTCAtypes("sys_file", 'tx_dj_imagetools_compressed,tx_dj_imagetools_width,tx_dj_imagetools_Height');
 
-$GLOBALS['TCA']['sys_file']['types'][$type]['showitem'] .= ',tx_dj_imagetools_compressed,tx_dj_imagetools_width,tx_dj_imagetools_Height';
+//$GLOBALS['TCA']['sys_file']['types'][$type]['showitem'] .= ',tx_dj_imagetools_compressed,tx_dj_imagetools_width,tx_dj_imagetools_Height';
