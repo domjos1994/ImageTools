@@ -26,16 +26,14 @@
                                 <td><f:form.textfield id='width{file.uid}' class='form-control' property='txDjImagetoolsWidth' value='{f:if(condition: "{file.txDjImagetoolsWidth}!=-1", then:"{file.txDjImagetoolsWidth}", else: "")}' placeholder="{width}"/></td>
                                 <td><f:form.textfield id='height{file.uid}' class='form-control' property='txDjImagetoolsHeight' value='{f:if(condition: "{file.txDjImagetoolsHeight}!=-1", then:"{file.txDjImagetoolsHeight}", else: "")}' placeholder="{height}"/></td>
                                 <td>
-                                    <div class="col-md-12">
-                                        <div class="btn-group">
-                                            <f:link.action class="btn btn-primary btn-small" action="disableEntry" arguments="{file : file}">
-                                                <i class='fa fa-ban'></i>
-                                            </f:link.action>
-                                            <f:form.button class="btn btn-primary" type='submit' onclick='toggleLoader({file.uid})'>
-                                                <i class='fa fa-compress'></i>
-                                            </f:form.button>
-                                            <f:render partial="Info_Button" arguments="{identifier: file.originalResource.identifier}"/>
-                                        </div>
+                                    <div class="btn-group">
+                                        <f:link.action class="btn btn-primary btn-small" action="disableEntry" arguments="{file : file}">
+                                            <i class='fa fa-ban'></i>
+                                        </f:link.action>
+                                        <f:form.button class="btn btn-primary" type='submit' onclick='toggleLoader({file.uid})'>
+                                            <i class='fa fa-compress'></i>
+                                        </f:form.button>
+                                        <f:render partial="Info_Button" arguments="{identifier: file.originalResource.identifier}"/>
                                     </div>
                                 </td>
                                 <td>

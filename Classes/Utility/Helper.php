@@ -102,8 +102,12 @@ class Helper {
         return substr($request->getBaseUri(), 0, strrpos($request->getBaseUri(), "typo3/"));
     }
 
-    public static function addFlashMessage($type, $key, ActionController $controller) {
-        $controller->addFlashMessage(Helper::getLang('messages.' . $type . '.' . $key . '.content'), Helper::getLang('messages.' . $type . '.' . $key . '.title'), Helper::getMessageType($type));
+    public static function addFlashMessageFromLang($type, $key, ActionController $controller) {
+        Helper::addFlashMessage($type, Helper::getLang('messages.' . $type . '.' . $key . '.title'), Helper::getLang('messages.' . $type . '.' . $key . '.content'), $controller);
+    }
+
+    public static function addFlashMessage($type, $title, $content, ActionController $controller) {
+        $controller->addFlashMessage($title, $content, Helper::getMessageType($type));
     }
 
     /**

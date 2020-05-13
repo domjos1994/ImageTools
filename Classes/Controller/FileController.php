@@ -60,7 +60,7 @@ class FileController extends ActionController {
         Helper::saveSettings("lastActionMenuItem", "File");
 
         if (Helper::getSettings('tinifyKey') == NULL || Helper::getSettings('tinifyKey') == "key") {
-            Helper::addFlashMessage('error', 'noKey', $this);
+            Helper::addFlashMessageFromLang('error', 'noKey', $this);
         }
 
         $files = $this->fileRepository->getAllEntries(0, true);

@@ -2,6 +2,7 @@
 
 namespace DominicJoas\DjImagetools\Controller;
 
+use ImagickException;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -49,7 +50,7 @@ class StructureController extends ActionController {
         }
 
         if(!extension_loaded("imagick")) {
-            Helper::addFlashMessage('error', 'noIMagick', $this);
+            Helper::addFlashMessageFromLang('error', 'noIMagick', $this);
         }
         $this->view->assign('files', $comparables);
         $this->view->assign('selected', $selectedfile);
@@ -75,7 +76,13 @@ class StructureController extends ActionController {
     private function compare($selectedfile, $file1, $file2) {
         if($selectedfile!=NULL) {
             if($selectedfile->getUid()==$file1->getUid()) {
-                return round(100*floatval($this->compareImages($file1, $file2)[1]),2);
+                $result = $this->compareImages($file1, $file2);
+                if(is_array($result)) {
+                    return round(100*floatval($result[1]),2);
+                } else {
+                    Helper::addFlashMessage("error", $result, "Error", $this);
+                    return 0;
+                }
             } else {
                 return 0;
             }
@@ -86,11 +93,16 @@ class StructureController extends ActionController {
 
     private function compareImages($file1, $file2) {
         try {
-            $image1 = new Imagick($this->base . $file1->getOriginalResource()->getPublicUrl());
-            $image2 = new Imagick($this->base . $file2->getOriginalResource()->getPublicUrl());
-            $result = $image1->compareImages($image2, Imagick::METRIC_MEANABSOLUTEERROR);
+            $tmp1 = tempnam(sys_get_temp_dir(), "file1");
+            $tmp2 = tempnam(sys_get_temp_dir(), "file2");
+            $url1 = $this->base . $file1->getOriginalResource()->getPublicUrl();
+            $url2 = $this->base . $file2->getOriginalResource()->getPublicUrl();
+            file_put_contents($tmp1, file_get_contents($url1));
+            file_put_contents($tmp2, file_get_contents($url2));
 
-            return $result;
+            $image1 = new Imagick($tmp1);
+            $image2 = new Imagick($tmp2);
+            return $image1->compareImages($image2, Imagick::METRIC_MEANABSOLUTEERROR);
         } catch (ImagickException $ex) {
             return $ex->getMessage();
         }
