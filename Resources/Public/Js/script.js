@@ -28,3 +28,18 @@ function changeColorOfRow() {
     });
 }
 
+function openInfo(identifier) {
+    try {
+        if (typeof top.TYPO3.InfoWindow.showItem === 'function') {
+            top.TYPO3.InfoWindow.showItem( '_FILE', '1:' + identifier);
+            return false;
+        } else {
+            top.launchView('_FILE', '1:' + identifier);
+            return false;
+        }
+    } catch (e) {
+        top.launchView('_FILE', '1:' + identifier);
+        return false;
+    }
+}
+
