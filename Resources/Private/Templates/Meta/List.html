@@ -49,7 +49,7 @@
                                         <f:render partial="Info_Button" arguments="{identifier: file.identifier}"/>
                                         <f:if condition="!{file.parent}">
                                             <f:then>
-                                                <be:link.editRecord uid="{file.parentUid}" table="tt_content" class="btn btn-primary">
+                                                <be:link.editRecord uid="{file.foreignUid.properties.uid_foreign}" table="tt_content" class="btn btn-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </be:link.editRecord>
                                             </f:then>

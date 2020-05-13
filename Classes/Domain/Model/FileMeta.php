@@ -17,6 +17,8 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
      */
     protected $parentUid;
 
+    protected $foreignUid;
+
     /**
      * Identifier of file
      *
@@ -103,6 +105,14 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
      */
     public function setParentUid($parentUid) {
         $this->parentUid = $parentUid;
+    }
+
+    public function getForeignUid() {
+        return $this->foreignUid;
+    }
+
+    public function setForeignUid($foreignUid) {
+        $this->foreignUid = $foreignUid;
     }
 
     /**

@@ -208,7 +208,6 @@ class FileRepository extends Repository {
             try {
                 $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
                 $obj = $repo->findFileReferenceByUid($file->getOriginalResource()->getUid());
-                var_dump($obj);
                 if($obj!=null) {
                     $this->addReferenceFileMetaIfExists($array, $i, $obj, $parentUid, $parentParams, $identifier);
                 }
@@ -226,11 +225,12 @@ class FileRepository extends Repository {
         $array[$i++] = $fileMeta;
     }
 
-    private function createFileMeta(File $file, $parent, $title, $alternative, $description, $identifier) {
+    private function createFileMeta($file, $parent, $title, $alternative, $description, $identifier) {
         $fileMeta = new FileMeta();
         $fileMeta->setUid($file->getUid());
         $fileMeta->setIdentifier($identifier);
         $fileMeta->setParent($parent);
+        $fileMeta->setForeignUid($file);
         $fileMeta->setTitle($title);
         $fileMeta->setAlternative($alternative);
         $fileMeta->setDescription($description);
