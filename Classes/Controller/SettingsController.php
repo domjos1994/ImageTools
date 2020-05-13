@@ -27,6 +27,7 @@ class SettingsController extends ActionController {
      * @throws
      */
     public function updateAction(array $settings) {
+        var_dump($settings);
         Helper::saveSettings("tinifyKey", $settings["tinifyKey"]);
         Helper::saveSettings("widthForAll", $settings["widthForAll"]);
         Helper::saveSettings("heightForAll", $settings["heightForAll"]);
