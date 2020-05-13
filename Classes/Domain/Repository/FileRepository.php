@@ -6,6 +6,7 @@ use DominicJoas\DjImagetools\Domain\Model\FileMeta;
 use DominicJoas\DjImagetools\Utility\Helper;
 use DominicJoas\DjImagetools\Domain\Model\File;
 
+use Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
@@ -204,18 +205,20 @@ class FileRepository extends Repository {
             $parentParams[2] = $this->setParentParam($file, "description");
             $array[$i++] = $this->createFileMeta($file, true, $parentParams[0], $parentParams[1], $parentParams[2], $identifier);
 
-            $obj = $this->getFileReferences($file->getUid());
-            if($obj!=null) {
-                foreach($obj->toArray() as $referencedFile) {
-                    $this->addReferenceFileMetaIfExists($array, $i, $referencedFile, $parentUid, $parentParams, $identifier);
+            try {
+                $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
+                $obj = $repo->findFileReferenceByUid($file->getOriginalResource()->getUid());
+                var_dump($obj);
+                if($obj!=null) {
+                    $this->addReferenceFileMetaIfExists($array, $i, $obj, $parentUid, $parentParams, $identifier);
                 }
-            }
+            } catch (Exception $ex) {}
+
         }
     }
 
     private function addReferenceFileMetaIfExists(&$array, &$i, $reference, $parentUid, $parentParams, $identifier) {
         $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
-
         $fileMeta = $this->createFileMeta($reference, false, $this->setParams("title", $repo, $reference->getUid()), $this->setParams("alternative", $repo, $reference->getUid()), $this->setParams("description", $repo, $reference->getUid()), $identifier);
         $fileMeta->setParentData($parentParams);
         $fileMeta->setParentUid($parentUid);
