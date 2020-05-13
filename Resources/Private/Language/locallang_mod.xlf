@@ -96,7 +96,7 @@
                 <source>Same folder as uncompressed images!</source>
             </trans-unit>
             <trans-unit id="settings.uploadFolder">
-                <source>Use other folder (relative path)!</source>
+                <source>Use other folder (relative path from fileadmin)!</source>
             </trans-unit>
             <trans-unit id="settings.saved">
                 <source>Settings saved successfully!</source>

@@ -126,7 +126,7 @@
             </trans-unit>
             <trans-unit id="settings.uploadFolder">
                 <source>Use other folder (relative path)!</source>
-                <target>Benutzer anderen Ordner (Relativer Pfad)!</target>
+                <target>Benutzer anderen Ordner (Relativer Pfad von fileadmin)!</target>
             </trans-unit>
             <trans-unit id="settings.saved">
                 <source>Settings saved successfully!</source>

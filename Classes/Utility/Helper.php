@@ -1,7 +1,11 @@
 <?php
 namespace DominicJoas\DjImagetools\Utility;
 
+use DominicJoas\DjImagetools\Controller\SettingsController;
+use Exception;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -112,19 +116,23 @@ class Helper {
 
     /**
      * 
-     * @param type $storage
-     * @param type $identifier
-     * @param type $settings
-     * @return type
+     * @param ResourceStorage $storage
+     * @param string $identifier
+     * @param array $settings
+     * @return string
      */
     private static function getIdentifier($storage, $identifier, $settings) {
-        if(!$settings["sameFolder"]) {
+        if($settings[SettingsController::SAME_FOLDER]=="0") {
             try {
-                if(!$storage->getFolder($identifier)) {
-                    return $storage->createFolder($settings["uploadPath"] . $identifier)->getIdentifier();
+                $upload = $settings[SettingsController::UPLOAD_PATH];
+                if(!$storage->hasFolder($upload)) {
+                    $upload_identifier = $storage->createFolder($settings[SettingsController::UPLOAD_PATH])->getIdentifier();
+                } else {
+                    $upload_identifier = $storage->getFolder($settings[SettingsController::UPLOAD_PATH])->getIdentifier();
                 }
+                return $upload_identifier;
             } catch (Exception $ex) {
-                return $storage->getFolder($settings["uploadPath"] . $identifier)->getIdentifier();
+                return $storage->getFolder($settings[SettingsController::UPLOAD_PATH] . $identifier)->getIdentifier();
             }
         }
         return $identifier;
