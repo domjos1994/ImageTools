@@ -9,7 +9,6 @@ use DominicJoas\DjImagetools\Domain\Model\File;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
-use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
@@ -30,7 +29,7 @@ class FileRepository extends Repository {
             if ($uid != 0) {
                 $files[0] = $this->findByUid($uid);
             } else {
-                $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+                $resourceFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\ResourceFactory::class);
 
                 if ($folderIdentifier == null) {
                     $folderIdentifier = $resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
@@ -50,12 +49,16 @@ class FileRepository extends Repository {
                     }
                 }
             }
-        } catch (InsufficientFolderAccessPermissionsException $e) {
-            return $e;
         } catch (\Exception $e) {
             return $e;
         }
         return $files;
+    }
+
+    public function findByUid($uid) {
+        $query = $this->createQuery();
+        $query->statement("SELECT * FROM sys_file WHERE uid=$uid");
+        return $query->execute()->toArray()[0];
     }
 
     public function updateReference($fileUid, $parentUid, $referenceUid = 0) {

@@ -28,8 +28,7 @@ $temporaryColumns = array(
     ),
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
-        'sys_file', $temporaryColumns
-);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file', $temporaryColumns);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file', 'tx_dj_imagetools_compressed,tx_dj_imagetools_width,tx_dj_imagetools_Height');
 
-$GLOBALS['TCA']['sys_file']['types'][$type]['showitem'] .= ',tx_dj_imagetools_compressed,tx_dj_imagetools_width,tx_dj_imagetools_Height';
+//$GLOBALS['TCA']['sys_file']['types'][$type]['showitem'] .= ',tx_dj_imagetools_compressed,tx_dj_imagetools_width,tx_dj_imagetools_Height';

@@ -1,6 +1,6 @@
 <?php
 
-$EM_CONF[$_EXTKEY] = array (
+$EM_CONF["dj_imagetools"] = array (
     'title' => 'ImageTools',
     'description' => 'An extension to compress, resize and update Meta-Data of images!',
     'category' => 'plugin',
@@ -9,9 +9,9 @@ $EM_CONF[$_EXTKEY] = array (
     'author_email' => 'developing@domjos.de',
     'state' => 'alpha',
     'clearCacheOnLoad' => true,
-    'version' => '0.0.2',
+    'version' => '10.4.0',
     'constraints' => array (
-        'depends' => array ('typo3' => '7.6.0-9.5.99',),
+        'depends' => array ('typo3' => '8.7.0-10.4.99',),
         'conflicts' => array (),
         'suggests' => array (),
     ),

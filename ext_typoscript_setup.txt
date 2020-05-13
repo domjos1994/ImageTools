@@ -9,6 +9,11 @@ config.tx_extbase {
              DominicJoas\DjImagetools\Domain\Model\File {
                 mapping {
                     tableName = sys_file
+                    columns {
+                        tx_dj_imagetools_compressed.mapOnProperty = tx_dj_imagetools_compressed
+                        tx_dj_imagetools_width.mapOnProperty = tx_dj_imagetools_width
+                        tx_dj_imagetools_height.mapOnProperty = tx_dj_imagetools_height
+                    }
                 }
             }
         }
