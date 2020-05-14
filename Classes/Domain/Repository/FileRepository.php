@@ -9,7 +9,7 @@ use DominicJoas\DjImagetools\Domain\Model\File;
 use Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
@@ -19,8 +19,28 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class FileRepository extends Repository {
-    
+    /**
+     * @var ResourceFactory
+     */
+    private $resourceFactory;
+
+    /**
+     * @var \TYPO3\CMS\Core\Resource\FileRepository
+     */
+    private $fileRepository;
+
+    /**
+     * @var MetaDataRepository
+     */
+    private $metadataRepository;
+
+    /**
+     * @var DataHandler
+     */
+    private $dataHandler;
+
     public function getAllEntries($uid = 0, $unCompressed = false) {
+
         $extensions = array('png', 'jpg', 'JPG', 'PNG', 'jpeg');
         $folderIdentifier = $GLOBALS["_GET"]["id"];
         $files = array();
@@ -30,12 +50,12 @@ class FileRepository extends Repository {
             if ($uid != 0) {
                 $files[0] = $this->findByUid($uid);
             } else {
-                $resourceFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\ResourceFactory::class);
+                $this->initResourceFactory();
 
                 if ($folderIdentifier == null) {
-                    $folderIdentifier = $resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
+                    $folderIdentifier = $this->resourceFactory->getDefaultStorage()->getFolder('/')->getCombinedIdentifier();
                 }
-                $tmpFiles = $resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
+                $tmpFiles = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
 
                 foreach ($tmpFiles as $tmp) {
                     if (in_array($tmp->getExtension(), $extensions)) {
@@ -50,7 +70,7 @@ class FileRepository extends Repository {
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return $files;
@@ -63,7 +83,7 @@ class FileRepository extends Repository {
     }
 
     public function updateReference($fileUid, $parentUid, $referenceUid = 0) {
-        $fileRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\FileRepository::class);
+        $this->initFileRepository();
         $references = $this->getFileReferences($fileUid);
 
         $somethingWentWrong = false;
@@ -73,7 +93,7 @@ class FileRepository extends Repository {
                     continue;
                 }
             }
-            $foundFileReference = $fileRepository->findFileReferenceByUid($reference->getUid());
+            $foundFileReference = $this->fileRepository->findFileReferenceByUid($reference->getUid());
             $foreign_id = $foundFileReference->getProperty('uid_foreign');
             if (!$this->addFileReference($parentUid, $foreign_id)) {
                 $somethingWentWrong = true;
@@ -82,18 +102,19 @@ class FileRepository extends Repository {
         }
 
         if(!$somethingWentWrong) {
-            $resourceFactory = ResourceFactory::getInstance();
-            $storage = $resourceFactory->getDefaultStorage();
-            $repo = new \TYPO3\CMS\Core\Resource\FileRepository();
-            $file = $repo->findByUid($fileUid);
-            $storage->deleteFile($file);
+            $this->initResourceFactory();
+            $storage = $this->resourceFactory->getDefaultStorage();
+            $file = $this->fileRepository->findFileReferenceByUid($fileUid);
+            try {
+                $storage->deleteFile($file);
+            } catch (Exception $e) {}
         }
     }
 
     private function addFileReference($file, $content) {
-        $resourceFactory = ResourceFactory::getInstance();
+        $this->initResourceFactory();
         try {
-            $fileObject = $resourceFactory->getFileObject((int)$file);
+            $fileObject = $this->resourceFactory->getFileObject((int)$file);
             $contentElement = BackendUtility::getRecord('tt_content', (int)$content);
             $newId = 'NEW1234';
             $data = array();
@@ -109,11 +130,11 @@ class FileRepository extends Repository {
                 'image' => $newId
             );
 
-            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-            $dataHandler->start($data, array());
-            $dataHandler->process_datamap();
-            return count($dataHandler->errorLog) === 0;
-        } catch (FileDoesNotExistException $e) {
+            $this->initDataHandler();
+            $this->dataHandler->start($data, array());
+            $this->dataHandler->process_datamap();
+            return count($this->dataHandler->errorLog) === 0;
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -147,8 +168,7 @@ class FileRepository extends Repository {
         } else {
             $query->statement("SELECT * FROM sys_file_reference WHERE deleted=0 AND uid_local=$fileUid");
         }
-        $result = $query->execute();
-        return $result;
+        return $query->execute();
     }
     
     public function getFilesAndReferences(Request $request) {
@@ -163,8 +183,7 @@ class FileRepository extends Repository {
     }
     
     public function saveMeta(FileMeta $fileMeta) {
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        $metadata = $objectManager->get('TYPO3\CMS\Core\Resource\Index\MetaDataRepository');
+        $this->initMetadataRepository();
 
         if($fileMeta->getParent()) {
             $files = $this->getAllEntries($fileMeta->getUid());
@@ -174,7 +193,7 @@ class FileRepository extends Repository {
                 $array['title'] = $fileMeta->getTitle();
                 $array['alternative'] = $fileMeta->getAlternative();
                 $array['description'] = $fileMeta->getDescription();
-                $metadata->update($fileMeta->getUid(), $array);
+                $this->metadataRepository->update($fileMeta->getUid(), $array);
             }
 
             if($fileMeta->getChildren()) {
@@ -249,24 +268,74 @@ class FileRepository extends Repository {
             ->execute();
     }
 
-    private function setParentParam(File $file, $descr) {
-        if($file->getOriginalResource()->_getMetaData()[$descr]!=null) {
-            return $file->getOriginalResource()->_getMetaData()[$descr];
+    private function setParentParam(File $file, $description) {
+        if (method_exists($file->getOriginalResource(), "getMetaData")) {
+            $array = $file->getOriginalResource()->getMetaData()->get();
+            if ($array[$description] != null) {
+                return $array[$description];
+            } else {
+                return "";
+            }
         } else {
-            return "";
+            $array = $file->getOriginalResource()->_getMetaData();
+            if ($array[$description] != null) {
+                return $array[$description];
+            } else {
+                return "";
+            }
         }
     }
     
-    private function setParams($descr, \TYPO3\CMS\Core\Resource\FileRepository $repo, $parentUid) {
+    private function setParams($description, \TYPO3\CMS\Core\Resource\FileRepository $repo, $parentUid) {
         $obj = $repo->findFileReferenceByUid($parentUid);
         if($obj!=null) {
             $properties = $obj->getProperties();
-            if ($properties[$descr] == "") {
+            if ($properties[$description] == "") {
                 return "";
             } else {
-                return $properties[$descr];
+                return $properties[$description];
             }
         }
         return null;
+    }
+
+    private function initResourceFactory() {
+        if(!isset($this->resourceFactory)) {
+            $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        } else {
+            if(is_null($this->resourceFactory)) {
+                $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+            }
+        }
+    }
+
+    private function initFileRepository() {
+        if(!isset($this->fileRepository)) {
+            $this->fileRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\FileRepository::class);
+        } else {
+            if(is_null($this->fileRepository)) {
+                $this->fileRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\FileRepository::class);
+            }
+        }
+    }
+
+    private function initMetadataRepository() {
+        if(!isset($this->metadataRepository)) {
+            $this->metadataRepository = GeneralUtility::makeInstance(MetaDataRepository::class);
+        } else {
+            if(is_null($this->metadataRepository)) {
+                $this->metadataRepository = GeneralUtility::makeInstance(MetaDataRepository::class);
+            }
+        }
+    }
+
+    private function initDataHandler() {
+        if(!isset($this->dataHandler)) {
+            $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        } else {
+            if(is_null($this->dataHandler)) {
+                $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            }
+        }
     }
 }

@@ -55,6 +55,7 @@ class StructureController extends ActionController {
         $this->view->assign('files', $comparables);
         $this->view->assign('selected', $selectedfile);
         $this->view->assign('path', Helper::getFolIdent());
+        $this->view->assign('typo3Version', explode(".", TYPO3_version)[0]);
         return $this->view->render();
     }
 

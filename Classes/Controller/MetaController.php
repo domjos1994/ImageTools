@@ -28,6 +28,7 @@ class MetaController extends ActionController {
         $files = $this->fileRepository->getFilesAndReferences($this->request);
         $this->view->assign('files', $files);
         $this->view->assign('path', Helper::getFolIdent());
+        $this->view->assign('typo3Version', explode(".", TYPO3_version)[0]);
         return $this->view->render();
     }
     

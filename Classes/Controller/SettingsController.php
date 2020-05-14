@@ -26,6 +26,7 @@ class SettingsController extends ActionController {
         $settings[self::UPLOAD_PATH] = Helper::getSettings(self::UPLOAD_PATH);
 
         $this->view->assign("settings", $settings);
+        $this->view->assign('typo3Version', explode(".", TYPO3_version)[0]);
         return $this->view->render();
     }
 

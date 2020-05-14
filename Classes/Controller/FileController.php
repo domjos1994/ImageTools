@@ -78,6 +78,7 @@ class FileController extends ActionController {
         $this->view->assign('files', $existingFiles);
         $this->view->assign('width', Helper::getSettings('widthForAll'));
         $this->view->assign('height', Helper::getSettings('heightForAll'));
+        $this->view->assign('typo3Version', explode(".", TYPO3_version)[0]);
         return $this->view->render();
     }
     

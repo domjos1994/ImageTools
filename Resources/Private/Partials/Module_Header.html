@@ -1,3 +1,4 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 <div class="module-docheader t3js-module-docheader">
     <div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation row">
         <div class="module-docheader-bar-column-left">
@@ -30,9 +31,16 @@
         </div>
         <div class="module-docheader-bar-column-right">
             <div class="btn-toolbar">
-                <span class="btn btn-default btn-sm">
-                    <f:be.buttons.shortcut/>
-                </span>
+                <f:if condition="{typo3Version} != '10'">
+                    <f:then>
+                        <span class="btn btn-default btn-sm">
+                            <f:be.buttons.shortcut/>
+                        </span>
+                    </f:then>
+                    <f:else>
+                        <f:be.buttons.shortcut/>
+                    </f:else>
+                </f:if>
                 <span class="btn btn-default btn-sm">
                     <f:be.buttons.csh table="xMOD_tx_dj_imagetools" field="{cshField}"/>
                 </span>
@@ -40,3 +48,4 @@
         </div>
     </div>
 </div>
+</html>
