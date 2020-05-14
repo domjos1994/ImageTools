@@ -50,7 +50,7 @@ class StructureController extends ActionController {
         }
 
         if(!extension_loaded("imagick")) {
-            Helper::addFlashMessageFromLang('error', 'noIMagick', $this);
+            Helper::addFlashMessage('error', 'noIMagick', null, $this);
         }
         $this->view->assign('files', $comparables);
         $this->view->assign('selected', $selectedfile);

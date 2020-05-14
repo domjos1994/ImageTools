@@ -108,6 +108,10 @@
                 <source><![CDATA[Tinify-Key (Visit <a href="https://tinypng.com/developers" target="_blank" title="Zu TinyPNG-API">TinyPng</a> and get your API-Key!)]]></source>
                 <target><![CDATA[Tinify-Schlüssel (Besuche <a href="https://tinypng.com/developers" target="_blank" title="Zu TinyPNG-API">TinyPng</a> und generiere den API-Schlüssel!)]]></target>
             </trans-unit>
+            <trans-unit id="settings.onUpload">
+                <source>Compress on upload</source>
+                <target>Beim Hochladen komprimieren</target>
+            </trans-unit>
             <trans-unit id="settings.widthForAll">
                 <source>Default-Width for all images!</source>
                 <target>Standard-Breite für alle Bilder!</target>
@@ -148,6 +152,14 @@
             <trans-unit id="messages.error.noIMagick.content">
                 <source>The PHP-Module IMagick needs to be loaded!</source>
                 <target>Das PHP-Modul IMagick wurde nicht geladen!</target>
+            </trans-unit>
+            <trans-unit id="messages.info.compressHook.title">
+                <source>Image successfully compressed</source>
+                <target>Bild erfolgreich komprimiert</target>
+            </trans-unit>
+            <trans-unit id="messages.info.compressHook.content">
+                <source>Image successfully compressed by ImageTools!</source>
+                <target>Bild erfolgreich durch ImageTools komprimiert!</target>
             </trans-unit>
         </body>
     </file>

@@ -12,6 +12,7 @@ class SettingsController extends ActionController {
     public const OVERWRITE = "overwrite";
     public const SAME_FOLDER = "sameFolder";
     public const UPLOAD_PATH = "uploadPath";
+    public const COMPRESS_ON_UPLOAD = "compressOnUpload";
 
 
     public function listAction() {
@@ -24,6 +25,7 @@ class SettingsController extends ActionController {
         $settings[self::OVERWRITE] = Helper::getSettings(self::OVERWRITE);
         $settings[self::SAME_FOLDER] = Helper::getSettings(self::SAME_FOLDER);
         $settings[self::UPLOAD_PATH] = Helper::getSettings(self::UPLOAD_PATH);
+        $settings[self::COMPRESS_ON_UPLOAD] = Helper::getSettings(self::COMPRESS_ON_UPLOAD);
 
         $this->view->assign("settings", $settings);
         $this->view->assign('typo3Version', explode(".", TYPO3_version)[0]);
@@ -48,6 +50,11 @@ class SettingsController extends ActionController {
             Helper::saveSettings(self::SAME_FOLDER, "1");
         } else {
             Helper::saveSettings(self::SAME_FOLDER, "0");
+        }
+        if($settings[self::COMPRESS_ON_UPLOAD]) {
+            Helper::saveSettings(self::COMPRESS_ON_UPLOAD, "1");
+        } else {
+            Helper::saveSettings(self::COMPRESS_ON_UPLOAD, "0");
         }
         Helper::saveSettings(self::UPLOAD_PATH, $settings[self::UPLOAD_PATH]);
         $this->addFlashMessage("", Helper::getLang("settings.saved"));

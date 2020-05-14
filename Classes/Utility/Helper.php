@@ -4,15 +4,18 @@ namespace DominicJoas\DjImagetools\Utility;
 use DominicJoas\DjImagetools\Controller\SettingsController;
 use Exception;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class Helper {
-    
+    public const EXTENSIONS = array('png', 'jpg', 'JPG', 'PNG', 'jpeg');
+
     public static function getMessageType($type) {
         $messageType = NULL;
         switch($type) {
@@ -29,6 +32,12 @@ class Helper {
     public static function log($data) {
         echo '<script>';
         echo 'console.log('. json_encode( $data ) .')';
+        echo '</script>';
+    }
+
+    public static function alert($data) {
+        echo '<script>';
+        echo 'alert('. json_encode( $data ) .')';
         echo '</script>';
     }
 
@@ -106,12 +115,21 @@ class Helper {
         return substr($request->getBaseUri(), 0, strrpos($request->getBaseUri(), "typo3/"));
     }
 
-    public static function addFlashMessageFromLang($type, $key, ActionController $controller) {
-        Helper::addFlashMessage($type, Helper::getLang('messages.' . $type . '.' . $key . '.title'), Helper::getLang('messages.' . $type . '.' . $key . '.content'), $controller);
-    }
+    public static function addFlashMessage($type, $title, $content = null, ActionController $controller = null) {
+        if(is_null($content)) {
+            $key = $title;
+            $title = Helper::getLang('messages.' . $type . '.' . $key . '.title');
+            $content = Helper::getLang('messages.' . $type . '.' . $key . '.content');
+        }
 
-    public static function addFlashMessage($type, $title, $content, ActionController $controller) {
-        $controller->addFlashMessage($title, $content, Helper::getMessageType($type));
+        if(is_null($controller)) {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $flashMessageService = $objectManager->get(FlashMessageService::class);
+            $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
+            $messageQueue->addMessage(new FlashMessage($content, $title, Helper::getMessageType($type)));
+        } else {
+            $controller->addFlashMessage($content, $title, Helper::getMessageType($type));
+        }
     }
 
     /**

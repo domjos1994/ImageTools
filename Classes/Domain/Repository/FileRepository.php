@@ -41,7 +41,6 @@ class FileRepository extends Repository {
 
     public function getAllEntries($uid = 0, $unCompressed = false) {
 
-        $extensions = array('png', 'jpg', 'JPG', 'PNG', 'jpeg');
         $folderIdentifier = $GLOBALS["_GET"]["id"];
         $files = array();
         $counter = 0;
@@ -58,7 +57,7 @@ class FileRepository extends Repository {
                 $tmpFiles = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($folderIdentifier)->getFiles();
 
                 foreach ($tmpFiles as $tmp) {
-                    if (in_array($tmp->getExtension(), $extensions)) {
+                    if (in_array($tmp->getExtension(), Helper::EXTENSIONS)) {
                         if ($unCompressed) {
                             $tmpFile = $this->findByUid($tmp->getUid());
                             if ($tmpFile->getTxDjImagetoolsCompressed() != 1) {

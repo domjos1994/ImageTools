@@ -83,6 +83,9 @@
             <trans-unit id="settings.tinifyKey">
                 <source><![CDATA[Tinify-Key (Visit <a href="https://tinypng.com/developers" target="_blank" title="Zu TinyPNG-API">TinyPng</a> and get your API-Key!)]]></source>
             </trans-unit>
+            <trans-unit id="settings.onUpload">
+                <source>Compress on upload</source>
+            </trans-unit>
             <trans-unit id="settings.widthForAll">
                 <source>Default-Width for all images!</source>
             </trans-unit>
@@ -113,6 +116,12 @@
             </trans-unit>
             <trans-unit id="messages.error.noIMagick.content">
                 <source>The PHP-Module IMagick needs to be loaded!</source>
+            </trans-unit>
+            <trans-unit id="messages.info.compressHook.title">
+                <source>Image successfully compressed</source>
+            </trans-unit>
+            <trans-unit id="messages.info.compressHook.content">
+                <source>Image successfully compressed by ImageTools!</source>
             </trans-unit>
         </body>
     </file>

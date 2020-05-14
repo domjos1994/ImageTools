@@ -7,11 +7,17 @@
 
             <f:form controller="Settings" action="update" name="settings" object="{settings}">
                 <div class="row">
-                    <div class="form-group t3js-formengine-validation-marker t3js-formengine-palette-field col-md-12">
+                    <div class="form-group t3js-formengine-validation-marker t3js-formengine-palette-field col-md-6 col-sm-6">
                         <label class="t3js-formengine-label">
                             <f:format.raw><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:settings.tinifyKey"/></f:format.raw>
                         </label>
                         <f:form.password class='form-control'  property="tinifyKey" value="{settings.tinifyKey}"/>
+                    </div>
+                    <div class="form-group t3js-formengine-validation-marker t3js-formengine-palette-field col-md-6">
+                        <label class="t3js-formengine-label">
+                            <f:format.raw><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:settings.onUpload"/></f:format.raw>
+                        </label>
+                        <f:form.checkbox property="compressOnUpload" checked="{settings.compressOnUpload}" value="compressOnUpload"/>
                     </div>
                 </div>
 
@@ -36,7 +42,6 @@
                             <f:format.raw><f:translate key="LLL:EXT:dj_imagetools/Resources/Private/Language/locallang_mod.xlf:settings.overwrite"/></f:format.raw>
                         </label>
                         <f:form.checkbox property="overwrite" checked="{settings.overwrite}" value="Overwrite"/>
-
                     </div>
                     <div class="form-group t3js-formengine-validation-marker t3js-formengine-palette-field col-md-6">
                         <label class="t3js-formengine-label">
