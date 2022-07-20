@@ -187,12 +187,10 @@ class FileRepository extends Repository {
         if($fileMeta->getParent()) {
             $files = $this->getAllEntries($fileMeta->getUid());
             if($files[0]!=null) {
-                $file = $files[0];
-                $array = $file->getOriginalResource()->_getMetaData();
                 $array['title'] = $fileMeta->getTitle();
                 $array['alternative'] = $fileMeta->getAlternative();
                 $array['description'] = $fileMeta->getDescription();
-                $this->metadataRepository->update($fileMeta->getUid(), $array);
+                $this->metadataRepository->update($fileMeta->getUid(), (array) $array);
             }
 
             if($fileMeta->getChildren()) {
@@ -276,9 +274,9 @@ class FileRepository extends Repository {
                 return "";
             }
         } else {
-            $array = $file->getOriginalResource()->_getMetaData();
+            $array = $file->getOriginalResource()->getMetaData();
             if ($array[$description] != null) {
-                return $array[$description];
+                return ((array)$array)[$description];
             } else {
                 return "";
             }

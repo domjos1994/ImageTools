@@ -6,6 +6,7 @@ use Exception;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -74,7 +75,7 @@ class Helper {
         if($settings['overwrite']) {
            $file->getOriginalResource()->setContents($source->toBuffer());
         } else {
-            $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+            $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
             $storage = $resourceFactory->getDefaultStorage();
             $name = $file->getOriginalResource()->getName();
             $newName = "tinify.". $name;

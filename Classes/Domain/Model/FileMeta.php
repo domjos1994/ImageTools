@@ -17,6 +17,11 @@ class FileMeta implements \TYPO3\CMS\Core\SingletonInterface {
      */
     protected $parentUid;
 
+    /**
+     * Foreign-Uid of file
+     *
+     * @var integer
+     */
     protected $foreignUid;
 
     /**
