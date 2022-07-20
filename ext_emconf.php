@@ -11,7 +11,7 @@ $EM_CONF["dj_imagetools"] = array (
     'clearCacheOnLoad' => true,
     'version' => '11.5.0',
     'constraints' => array (
-        'depends' => array ('typo3' => '8.7.0-11.5.99',),
+        'depends' => array ('typo3' => '10.4.0-11.5.99',),
         'conflicts' => array (),
         'suggests' => array (),
     ),
