@@ -9,9 +9,9 @@ $EM_CONF["dj_imagetools"] = array (
     'author_email' => 'developing@domjos.de',
     'state' => 'alpha',
     'clearCacheOnLoad' => true,
-    'version' => '10.4.0',
+    'version' => '11.5.0',
     'constraints' => array (
-        'depends' => array ('typo3' => '8.7.0-10.4.99',),
+        'depends' => array ('typo3' => '8.7.0-11.5.99',),
         'conflicts' => array (),
         'suggests' => array (),
     ),
